@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 using namespace std;
 
@@ -13,31 +14,31 @@ int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    sf::RenderWindow window(sf::VideoMode(1024, 768), "SFML works!",
+    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML works!",
             sf::Style::Default, settings);
 
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(100,100), sf::Color::White),
+            sf::Vertex(sf::Vector2f(100,100), sf::Color::White)
+    };
+
+    float degrees = 1.0f;
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                // left key is pressed: move our character
-                shape.move(1, 0);
-            }
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                // left key is pressed: move our character
-                shape.move(-1, 0);
-            }
 
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
+        degrees += 0.1f;
+
+        line[1].position.x = 100 + (std::cos((2 * M_PI / 360 ) * degrees)*100);
+        line[1].position.y = 100 + (std::sin((2 * M_PI / 360) * degrees)*100);
+
         window.clear();
-        window.draw(shape);
+        window.draw(line, 2, sf::Lines);
         window.display();
     }
 
