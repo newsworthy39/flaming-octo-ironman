@@ -1,48 +1,44 @@
-/**
- * Author: newsworthy39
- * Documentation: http://www.sfml-dev.org/documentation/2.2/
- */
+#include <SFML/Window.hpp>
+#include <SFML/OpenGL.hpp>
 
-#include <iostream>
-#include <SFML/Graphics.hpp>
-#include <cmath>
+int main()
+{
+    // create the window
+    sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+    window.setVerticalSyncEnabled(true);
 
-using namespace std;
+    // load resources, initialize the OpenGL states, ...
 
-int main() {
-
-    sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
-
-    sf::RenderWindow window(sf::VideoMode(1980, 1024), "SFML works!",
-            sf::Style::Default, settings);
-
-    window.setFramerateLimit(60);
-
-    sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(100,100), sf::Color::White),
-            sf::Vertex(sf::Vector2f(100,100), sf::Color::White)
-    };
-
-    float degrees = 1.0f;
-
-    while (window.isOpen()) {
+    // run the main loop
+    bool running = true;
+    while (running)
+    {
+        // handle events
         sf::Event event;
-        while (window.pollEvent(event)) {
-
+        while (window.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
-                window.close();
+            {
+                // end the program
+                running = false;
+            }
+            else if (event.type == sf::Event::Resized)
+            {
+                // adjust the viewport when the window is resized
+                glViewport(0, 0, event.size.width, event.size.height);
+            }
         }
 
-        degrees += 0.1f;
+        // clear the buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        line[1].position.x = 100 + (std::cos((2 * M_PI / 360 ) * degrees)*100);
-        line[1].position.y = 100 + (std::sin((2 * M_PI / 360) * degrees)*100);
+        // draw...
 
-        window.clear();
-        window.draw(line, 2, sf::Lines);
+        // end the current frame (internally swaps the front and back buffers)
         window.display();
     }
+
+    // release resources...
 
     return 0;
 }
