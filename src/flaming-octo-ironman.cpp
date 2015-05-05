@@ -6,6 +6,7 @@ int main()
     // create the window
     sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
     window.setVerticalSyncEnabled(true);
+    window.setFramerateLimit(30);
 
     // load resources, initialize the OpenGL states, ...
 
