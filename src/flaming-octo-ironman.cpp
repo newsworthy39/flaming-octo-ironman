@@ -14,8 +14,10 @@ int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML works!",
+    sf::RenderWindow window(sf::VideoMode(1980, 1024), "SFML works!",
             sf::Style::Default, settings);
+
+    window.setFramerateLimit(60);
 
     sf::Vertex line[] = {
             sf::Vertex(sf::Vector2f(100,100), sf::Color::White),
