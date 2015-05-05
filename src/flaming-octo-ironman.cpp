@@ -1,3 +1,8 @@
+/**
+ * Author: newsworthy39
+ * Documentation: http://www.sfml-dev.org/documentation/2.2/
+ */
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
