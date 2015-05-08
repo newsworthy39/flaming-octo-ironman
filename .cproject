@@ -24,6 +24,9 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.687018767" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.109501522" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.std.853146502" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1490255460" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="__DEBUG__"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.549708949" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.606158297" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
@@ -34,9 +37,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1478639551" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1920011502" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.libs.443788319" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="GL"/>
-									<listOptionValue builtIn="false" value="GLU"/>
-									<listOptionValue builtIn="false" value="glut"/>
+									<listOptionValue builtIn="false" value="sfml-network"/>
 									<listOptionValue builtIn="false" value="sfml-window"/>
 									<listOptionValue builtIn="false" value="sfml-system"/>
 									<listOptionValue builtIn="false" value="sfml-graphics"/>
@@ -92,9 +93,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1773283693" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.224824354" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
 								<option id="gnu.cpp.link.option.libs.1295495878" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="GL"/>
-									<listOptionValue builtIn="false" value="GLU"/>
-									<listOptionValue builtIn="false" value="glut"/>
+									<listOptionValue builtIn="false" value="sfml-network"/>
 									<listOptionValue builtIn="false" value="sfml-window"/>
 									<listOptionValue builtIn="false" value="sfml-system"/>
 									<listOptionValue builtIn="false" value="sfml-graphics"/>
@@ -145,4 +144,5 @@
 			<resource resourceType="PROJECT" workspacePath="/flaming-octo-ironman"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>
