@@ -1,45 +1,81 @@
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
+/**
+ * Author: newsworthy39
+ * Documentation: http://www.sfml-dev.org/documentation/2.2/
+ */
 
-int main()
-{
-    // create the window
-    sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
-    window.setVerticalSyncEnabled(true);
-    window.setFramerateLimit(30);
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
 
-    // load resources, initialize the OpenGL states, ...
+using namespace std;
 
-    // run the main loop
-    bool running = true;
-    while (running)
-    {
-        // handle events
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                // end the program
-                running = false;
-            }
-            else if (event.type == sf::Event::Resized)
-            {
-                // adjust the viewport when the window is resized
-                glViewport(0, 0, event.size.width, event.size.height);
-            }
-        }
+sf::Http http;
 
-        // clear the buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void PollRequest(int * memoryBucket, int * isRunning) {
 
-        // draw...
+	http.setHost("http://force.mjay.me");
 
-        // end the current frame (internally swaps the front and back buffers)
-        window.display();
-    }
+	while (*isRunning == 1) {
+		sf::Http::Request request;
 
-    // release resources...
+		request.setMethod(sf::Http::Request::Method::Get);
+		request.setUri("/metrics.php");
+		request.setHttpVersion(1, 0); // HTTP 1.1
+		request.setField("From", "me");
 
-    return 0;
+		sf::Http::Response response = http.sendRequest(request);
+		std::cout << "status: " << response.getStatus() << std::endl;
+		std::cout << "HTTP version: " << response.getMajorHttpVersion() << "."
+				<< response.getMinorHttpVersion() << std::endl;
+		std::cout << "Content-Type header:" << response.getField("Content-Type")
+				<< std::endl;
+		std::cout << "body: " << response.getStatus() << std::endl;
+
+		std::cout << "Response: " << response.getBody() << std::endl;
+
+		*memoryBucket = std::stoi(response.getBody());
+
+		sf::sleep(sf::seconds(5));
+	}
+}
+
+int main() {
+
+	int radius = 200; int isRunning = 1;
+
+	sf::Thread thread(std::bind(&PollRequest, &radius, &isRunning));
+
+	thread.launch();
+
+	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+
+	sf::CircleShape shape((float) radius);
+
+	shape.setFillColor(sf::Color::Green);
+
+
+
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+				isRunning = 0;
+				thread.wait();
+			}
+		}
+
+		shape.setRadius(radius);
+
+		window.clear();
+		window.draw(shape);
+		window.display();
+	}
+
+	thread.wait();
+
+	return 0;
 }
