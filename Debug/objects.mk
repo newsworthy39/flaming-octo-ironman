@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lGL -lGLU -lglut -lsfml-window -lsfml-system -lsfml-graphics
+LIBS := -lsfml-network -lsfml-window -lsfml-system -lsfml-graphics
 
