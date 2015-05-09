@@ -21,7 +21,7 @@ std::random_device rd;
 std::mt19937 mt(rd());
 std::uniform_real_distribution<double> dist(1, 6);
 
-float radius = 200, animation = 200;
+float radius = 200, prevRadius = 200;
 int isRunning = 1;
 float x = 100.0f, y = 100.0f;
 
@@ -51,12 +51,8 @@ void PollRequest(int * isRunning) {
 #endif
 
 		mutex.lock();
-		// Store the previous.
-		animation = radius;
-
 		// The next.
 		radius = std::stoi(response.getBody());
-
 		mutex.unlock();
 
 		sf::sleep(sf::seconds(dist(mt)));
@@ -69,13 +65,16 @@ int main() {
 	thread.launch();
 
 	sf::ContextSettings context;
+
 	context.antialiasingLevel = 4;
 
 	sf::RenderWindow window(sf::VideoMode(640, 480), "SFML works!",
 			sf::Style::Default, context);
 
 	sf::CircleShape shape((float) radius);
+
 	shape.setFillColor(sf::Color(16,16,16));
+
 	shape.setPointCount(64);
 
 	while (window.isOpen()) {
@@ -92,9 +91,15 @@ int main() {
 
 
 		mutex.lock();
-		animation = std::min(radius, animation) - std::max(radius, animation) ; // => DeltaRadius = max - min, ie. 190 - 103
-		shape.setRadius(radius + (animation / 8));
-		animation = animation / 8;
+
+		float diffRadius = (prevRadius - radius)/128;
+
+		shape.setRadius(prevRadius + diffRadius);
+
+		prevRadius -= diffRadius;
+
+		//sf::sleep(sf::milliseconds(500));
+
 		mutex.unlock();
 
 		shape.setFillColor(sf::Color(255,16,16));
