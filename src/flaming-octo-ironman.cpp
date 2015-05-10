@@ -8,110 +8,130 @@
 #include <thread>
 #include <functional>
 #include <random>
+#include <vector>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-using namespace std;
+#include "AnimatedRectangle.h"
 
-sf::Mutex mutex;
 sf::Http http;
 std::random_device rd;
 std::mt19937 mt(rd());
-std::uniform_real_distribution<double> dist(1, 6);
+std::uniform_real_distribution<double> dist(1, 7);
 
-float radius = 200, prevRadius = 200;
+std::vector<objects::AnimatedRectangle> shapes(99);
+
+sf::Text text;
+
 int isRunning = 1;
-float x = 100.0f, y = 100.0f;
 
 void PollRequest(int * isRunning) {
 
-	http.setHost("http://force.mjay.me");
+    http.setHost("http://force.mjay.me");
+    int rotate = 0;
 
-	while (*isRunning == 1) {
-		sf::Http::Request request;
+    while (*isRunning == 1) {
+        sf::Http::Request request;
 
-		request.setMethod(sf::Http::Request::Method::Post);
-		request.setUri("/metrics.php");
-		request.setHttpVersion(1, 0); // HTTP 1.1
-		request.setField("X-HTTP-Token", "Yes");
+        request.setMethod(sf::Http::Request::Method::Post);
+        request.setUri("/metrics.php");
+        request.setHttpVersion(1, 0); // HTTP 1.1
+        request.setField("X-HTTP-Token", "Yes");
 
-		sf::Http::Response response = http.sendRequest(request);
+        sf::Http::Response response = http.sendRequest(request);
 
 #ifdef __DEBUG__
-		std::cout << "status: " << response.getStatus() << std::endl;
-		std::cout << "HTTP version: " << response.getMajorHttpVersion() << "."
-				<< response.getMinorHttpVersion() << std::endl;
-		std::cout << "Content-Type header:" << response.getField("Content-Type")
-				<< std::endl;
-		std::cout << "body: " << response.getStatus() << std::endl;
+        std::cout << "status: " << response.getStatus() << std::endl;
+        std::cout << "HTTP version: " << response.getMajorHttpVersion() << "."
+                << response.getMinorHttpVersion() << std::endl;
+        std::cout << "Content-Type header:" << response.getField("Content-Type")
+                << std::endl;
+        std::cout << "body: " << response.getStatus() << std::endl;
 
-		std::cout << "Response: " << response.getBody() << std::endl;
+        std::cout << "Response: " << response.getBody() << std::endl;
 #endif
+        float value = std::stoi(response.getBody());
 
-		mutex.lock();
-		// The next.
-		radius = std::stoi(response.getBody());
-		mutex.unlock();
+        shapes[rotate++ % shapes.size()].setValue(value);
 
-		sf::sleep(sf::seconds(dist(mt)));
-	}
+        text.setPosition(sf::Vector2f(rotate * 20 + 20, value));
+
+        text.setString(std::to_string((int)value));
+
+        text.setCharacterSize(std::max(32, std::min(64, (int) value)));
+
+        sf::sleep(sf::seconds(dist(mt)));
+    }
 }
 
 int main() {
 
-	sf::Thread thread(std::bind(&PollRequest, &isRunning));
-	thread.launch();
+    sf::Thread thread(std::bind(&PollRequest, &isRunning));
 
-	sf::ContextSettings context;
+    sf::ContextSettings context;
 
-	context.antialiasingLevel = 4;
+    context.antialiasingLevel = 4;
 
-	sf::RenderWindow window(sf::VideoMode(640, 480), "SFML works!",
-			sf::Style::Default, context);
+    sf::RenderWindow window(sf::VideoMode(1980, 1024), "SFML works!",
+            sf::Style::None, context);
 
-	sf::CircleShape shape((float) radius);
+    window.setFramerateLimit(60);
 
-	shape.setFillColor(sf::Color(16,16,16));
+    for (std::vector<objects::AnimatedRectangle>::size_type i = 0;
+            i != shapes.size(); i++) {
+        shapes[i].setHorizontalOffset((1 + i) * 20);
+    }
 
-	shape.setPointCount(64);
+    sf::Font font;
 
-	while (window.isOpen()) {
-		sf::Event event;
+    font.loadFromFile(
+            "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
 
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed
-					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-				window.close();
-				isRunning = 0;
-				thread.wait();
-			}
-		}
+    text.setFont(font);
+
+    text.setCharacterSize(20);
+
+    text.setPosition(sf::Vector2f(0, 0));
+
+    text.setString("1");
 
 
-		mutex.lock();
+    // Start it.
+    thread.launch();
 
-		float diffRadius = (prevRadius - radius)/128;
+    while (window.isOpen()) {
+        sf::Event event;
 
-		shape.setRadius(prevRadius + diffRadius);
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                window.close();
+                isRunning = 0;
+                thread.wait();
+            }
+        }
 
-		prevRadius -= diffRadius;
+        for (std::vector<objects::AnimatedRectangle>::iterator it =
+                shapes.begin(); it != shapes.end(); ++it) {
+            (*it).Update();
+        }
 
-		//sf::sleep(sf::milliseconds(500));
+        window.clear(sf::Color::Black);
 
-		mutex.unlock();
+        for (std::vector<objects::AnimatedRectangle>::iterator it =
+                shapes.begin(); it != shapes.end(); ++it) {
+            window.draw(*it);
+        }
 
-		shape.setFillColor(sf::Color(255,16,16));
+        window.draw(text);
 
-		shape.setPosition(sf::Vector2f(std::sqrt(radius), std::sqrt(radius)));
+        //window.draw(text);
+        window.display();
+    }
 
-		window.clear(sf::Color::Black);
-		window.draw(shape);
-		window.display();
-	}
+    thread.wait();
 
-	thread.wait();
-
-	return 0;
+    return 0;
 }

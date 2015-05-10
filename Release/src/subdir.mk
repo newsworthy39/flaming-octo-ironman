@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/AnimatedRectangle.cpp \
 ../src/flaming-octo-ironman.cpp 
 
 OBJS += \
+./src/AnimatedRectangle.o \
 ./src/flaming-octo-ironman.o 
 
 CPP_DEPS += \
+./src/AnimatedRectangle.d \
 ./src/flaming-octo-ironman.d 
 
 
