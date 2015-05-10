@@ -36,7 +36,7 @@ void AnimatedRectangle::Update() {
     //shape.setRadius(this->prevValue + diffRadius);
     this->shape.setSize(sf::Vector2f(20, this->prevValue + diffRadius));
 
-    this->shape.setFillColor(sf::Color(255, 16, 16));
+    this->shape.setFillColor(sf::Color(163, 38, 38));
 
     this->shape.setPosition(sf::Vector2f(this->horizontalOffset, 20));
 

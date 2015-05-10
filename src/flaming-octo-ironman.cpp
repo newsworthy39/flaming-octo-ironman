@@ -19,9 +19,9 @@
 sf::Http http;
 std::random_device rd;
 std::mt19937 mt(rd());
-std::uniform_real_distribution<double> dist(1, 7);
+std::uniform_real_distribution<double> dist(1, 9);
 
-std::vector<objects::AnimatedRectangle> shapes(99);
+std::vector<objects::AnimatedRectangle> shapes(56);
 
 sf::Text text;
 
@@ -30,15 +30,21 @@ int isRunning = 1;
 void PollRequest(int * isRunning) {
 
     http.setHost("http://force.mjay.me");
+
     int rotate = 0;
+    int lompartTimestamp = 9999999;
 
     while (*isRunning == 1) {
+
         sf::Http::Request request;
 
-        request.setMethod(sf::Http::Request::Method::Post);
-        request.setUri("/metrics.php");
+        request.setMethod(sf::Http::Request::Method::Get);
+
+        request.setUri("/msg.php");
+
         request.setHttpVersion(1, 0); // HTTP 1.1
-        request.setField("X-HTTP-Token", "Yes");
+
+        request.setField("X-lompart-Token", std::to_string(lompartTimestamp));
 
         sf::Http::Response response = http.sendRequest(request);
 
@@ -52,15 +58,66 @@ void PollRequest(int * isRunning) {
 
         std::cout << "Response: " << response.getBody() << std::endl;
 #endif
-        float value = std::stoi(response.getBody());
+        int value = 0;
 
-        shapes[rotate++ % shapes.size()].setValue(value);
+        if (response.getBody() != "") {
+            value = std::stoi(response.getBody());
+        } else {
+            value = lompartTimestamp;
+        }
 
-        text.setPosition(sf::Vector2f(rotate * 20 + 20, value));
+        // If this increases, then it was updated. Do something.
+        if (value > lompartTimestamp) {
 
-        text.setString(std::to_string((int)value));
+            // Now. How many messages, do we need to fetch?
+            int numMessages = value - lompartTimestamp;
 
-        text.setCharacterSize(std::max(32, std::min(64, (int) value)));
+            std::cout << "Will fetch " << numMessages << " messages." << std::endl;
+
+            for (int i = 0; i < numMessages; i++) {
+
+                sf::Http::Request request;
+
+                request.setMethod(sf::Http::Request::Method::Get);
+
+                request.setUri("/getmsg.php");
+
+                request.setHttpVersion(1, 0); // HTTP 1.1
+
+                request.setField("X-lompart-Token",
+                        std::to_string(lompartTimestamp + i));
+
+                sf::Http::Response response = http.sendRequest(request);
+
+#ifdef __DEBUG__
+                std::cout << "status: " << response.getStatus() << std::endl;
+                std::cout << "HTTP version: " << response.getMajorHttpVersion()
+                        << "." << response.getMinorHttpVersion() << std::endl;
+                std::cout << "Content-Type header:"
+                        << response.getField("Content-Type") << std::endl;
+                std::cout << "body: " << response.getStatus() << std::endl;
+
+                std::cout << "(fetched data) Response: " << response.getBody()
+                        << std::endl;
+
+#endif
+                if (response.getStatus() != 404) {
+                    int value = std::stoi(response.getBody());
+                    shapes[rotate++ % shapes.size()].setValue(value);
+                }
+            }
+
+        }
+
+        // Allways, end on the lighter side :)
+        lompartTimestamp = value; // update the value, so we don't fetch it several times.
+
+        /*text.setPosition(sf::Vector2f( ( rotate % shapes.size()) * 20 + 20, value));
+
+         text.setString(std::to_string((int)value));
+
+         text.setCharacterSize(std::max(32, std::min(64, (int) value)));
+         */
 
         sf::sleep(sf::seconds(dist(mt)));
     }
@@ -74,8 +131,8 @@ int main() {
 
     context.antialiasingLevel = 4;
 
-    sf::RenderWindow window(sf::VideoMode(1980, 1024), "SFML works!",
-            sf::Style::None, context);
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "SFML works!",
+            sf::Style::Close, context);
 
     window.setFramerateLimit(60);
 
@@ -97,8 +154,9 @@ int main() {
 
     text.setString("1");
 
+    text.setColor(sf::Color(35, 85, 85));
 
-    // Start it.
+// Start it.
     thread.launch();
 
     while (window.isOpen()) {
@@ -118,14 +176,14 @@ int main() {
             (*it).Update();
         }
 
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color(89, 217, 217));
 
         for (std::vector<objects::AnimatedRectangle>::iterator it =
                 shapes.begin(); it != shapes.end(); ++it) {
             window.draw(*it);
         }
 
-        window.draw(text);
+        // window.draw(text);
 
         //window.draw(text);
         window.display();
