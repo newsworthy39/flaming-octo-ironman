@@ -5,14 +5,20 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/AnimatedRectangle.cpp \
+../src/Bardiagrams.cpp \
+../src/JSONThreadedPoller.cpp \
 ../src/flaming-octo-ironman.cpp 
 
 OBJS += \
 ./src/AnimatedRectangle.o \
+./src/Bardiagrams.o \
+./src/JSONThreadedPoller.o \
 ./src/flaming-octo-ironman.o 
 
 CPP_DEPS += \
 ./src/AnimatedRectangle.d \
+./src/Bardiagrams.d \
+./src/JSONThreadedPoller.d \
 ./src/flaming-octo-ironman.d 
 
 

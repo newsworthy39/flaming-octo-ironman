@@ -12,6 +12,8 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
+#include "interface/Delegate.h"
+
 namespace objects {
 
 class AnimatedRectangle : public sf::Drawable, public sf::Transformable {
@@ -22,7 +24,6 @@ public:
     void setValue(float value);
     void setHorizontalOffset(float horizontalOffset);
     void setRotate(float degrees);
-
     void Update();
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
