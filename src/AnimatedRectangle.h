@@ -21,6 +21,7 @@ public:
 
     void setValue(float value);
     void setHorizontalOffset(float horizontalOffset);
+    void setRotate(float degrees);
 
     void Update();
 
@@ -30,6 +31,7 @@ private:
     float newValue;
     float prevValue;
     float horizontalOffset;
+    float rotate;
 };
 
 } /* namespace objects */

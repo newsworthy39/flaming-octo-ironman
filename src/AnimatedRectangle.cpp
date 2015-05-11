@@ -12,8 +12,9 @@ namespace objects {
 AnimatedRectangle::AnimatedRectangle() {
     this->newValue = 0.0f;
     this->prevValue = 0.0f;
-    this->horizontalOffset = 0;
+    this->horizontalOffset = 0.0f;;
     this->shape.setFillColor(sf::Color(16, 16, 16));
+    this->rotate = 0.0f;
 
 }
 
@@ -28,6 +29,10 @@ AnimatedRectangle::~AnimatedRectangle() {
 void AnimatedRectangle::setValue(float value) {
     this->prevValue = this->newValue;
     this->newValue = value;
+}
+
+void AnimatedRectangle::setRotate(float degress) {
+	this->shape.setRotation(degress);
 }
 
 void AnimatedRectangle::Update() {
