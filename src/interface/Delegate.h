@@ -10,7 +10,6 @@ class Delegate {
 public:
     virtual ~Delegate() { }
     virtual void ReceiveMessage(event::Event&) = 0;
-
 };
 
 }

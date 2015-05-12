@@ -12,7 +12,7 @@ namespace objects {
 Progressbar::Progressbar(int screen_w) : screen_w(screen_w) {
 
     font.loadFromFile(
-            "/home/gandalf/git/flaming-octo-ironman/src/font/Roboto-Light.ttf");
+            "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
 
     tekst.setFont(font);
     tekst.setString("0");

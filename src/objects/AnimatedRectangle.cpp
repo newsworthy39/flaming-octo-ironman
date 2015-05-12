@@ -7,7 +7,7 @@
 
 #include "AnimatedRectangle.h"
 
-namespace objects {
+namespace scenes {
 
 AnimatedRectangle::AnimatedRectangle() {
     this->newValue = 0.0f;

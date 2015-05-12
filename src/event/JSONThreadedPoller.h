@@ -20,10 +20,11 @@
 #include <SFML/System.hpp>
 
 #include <json11/json11.hpp>
-#include <interface/Delegate.h>
 #include <event/Event.h>
+#include <interface/Delegate.h>
+#include <interface/EventStatusDelegate.h>
 
-namespace jsonevents {
+namespace events {
 
 class JSONThreadedPoller {
 public:
@@ -34,15 +35,15 @@ public:
     void AddDelegate(interface::Delegate &);
     void RemoveDelegate(interface::Delegate &);
 
-    void SetProgressbar(interface::Delegate& pbar) ;
-    void RemoveProgressbar();
+    void AddEventStatusDelegate(interface::EventDelegateStatus& pbar) ;
+    void RemoveEventStatusDelegate();
 private:
     void go();
     bool isRunning ;
     sf::Thread sfThread;
     int lompartTimestamp;
 
-    interface::Delegate* messageLoader;
+    interface::EventDelegateStatus* messageLoader;
     std::vector<interface::Delegate*> delegates;
 
 	sf::Http http;

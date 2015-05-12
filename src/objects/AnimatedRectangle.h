@@ -12,7 +12,7 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-namespace objects {
+namespace scenes {
 
 class AnimatedRectangle : public sf::Drawable, public sf::Transformable {
 public:

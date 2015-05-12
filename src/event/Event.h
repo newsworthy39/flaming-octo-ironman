@@ -16,7 +16,7 @@ namespace event {
 
 class Event {
 public:
-	Event(int value ) { this->val = value; }
+	Event(int value) { this->val = value; }
 	virtual ~Event() { };
 	void SetValue(int value) { this->val = value; }
 	int GetValue() { return this->val; }

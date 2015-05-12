@@ -21,11 +21,8 @@
 #include <SFML/System.hpp>
 
 #include <X11/Xlib.h>
-
-#include "objects/AnimatedRectangle.h"
-#include "objects/Bardiagrams.h"
-#include "objects/Progressbar.h"
-#include "JSONThreadedPoller.h"
+#include <event/JSONThreadedPoller.h>
+#include <scenes/Dashboard.h>
 
 #define SCREEN_W 640
 #define SCREEN_H 480
@@ -48,15 +45,14 @@ int main() {
 	window.setFramerateLimit(60);
 
 	// Jsonthreaded poller
-	jsonevents::JSONThreadedPoller poller("http://force.mjay.me", 80);
+	events::JSONThreadedPoller poller("http://force.mjay.me", 80);
 
 	// Objects used, here-in.
-	objects::Bardiagrams diagrams(( SCREEN_W / 21) - 1);
-	objects::Progressbar messageBar ( SCREEN_W );
+	scenes::Dashboard dashboard(SCREEN_W);
 
 	// Add callback, to objects, to receive events.
-	poller.AddDelegate(diagrams);
-	poller.SetProgressbar(messageBar);
+	poller.AddDelegate(dashboard);
+	poller.AddEventStatusDelegate(dashboard);
 
 	// Start json-poller.
 	poller.Start();
@@ -74,15 +70,14 @@ int main() {
 		}
 
 		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
-		diagrams.Update();
-		messageBar.Update();
+		dashboard.Update();
+
 
 		// We like our color-scheme.
 		window.clear(sf::Color(89, 217, 217));
 
 		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
-		window.draw(messageBar);
-		window.draw(diagrams);
+		window.draw(dashboard);
 
 		// Show display.
 		window.display();

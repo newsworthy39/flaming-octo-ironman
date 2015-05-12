@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/scenes/subdir.mk
 -include src/objects/subdir.mk
 -include src/json11/subdir.mk
 -include src/event/subdir.mk
