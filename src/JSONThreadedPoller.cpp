@@ -127,18 +127,18 @@ void JSONThreadedPoller::go() {
             // Now. How many messages, do we need to fetch?
             int numMessages = value - lompartTimestamp;
 
+            sf::Http::Request request;
+
+            request.setMethod(sf::Http::Request::Method::Get);
+
+            request.setUri("/getmsg.php");
+
+            request.setHttpVersion(1, 1); // HTTP 1.1
+
             for (int i = 0; i < numMessages; i++) {
 
                 if (this->isRunning == false)
                     break;
-
-                sf::Http::Request request;
-
-                request.setMethod(sf::Http::Request::Method::Get);
-
-                request.setUri("/getmsg.php");
-
-                request.setHttpVersion(1, 0); // HTTP 1.1
 
                 request.setField("X-lompart-Token",
                         std::to_string(lompartTimestamp + i));
@@ -181,8 +181,8 @@ void JSONThreadedPoller::go() {
 
                     int value = json["data"].int_value();
 
-                     //tekst = std::to_string(numMessages - i);
-                     //tekst = std::to_string(); */
+                    //tekst = std::to_string(numMessages - i);
+                    //tekst = std::to_string(); */
 
                     // 'Demo-purpose only.
                     this->messageLoader->Ping(numMessages - i);
@@ -193,10 +193,11 @@ void JSONThreadedPoller::go() {
                         auto & delegate = *it;
 
                         delegate->Ping(value);
-                    }
-                }
-            }
-        }
+                    } // End ping delegates
+                } // end if not 404
+            } // end message-loop
+
+        } // end outer while loop
 
         // Allways, end on the lighter side :)
         this->lompartTimestamp = value; // update the value, so we don't fetch it several times.
