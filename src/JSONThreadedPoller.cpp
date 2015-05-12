@@ -92,6 +92,7 @@ void JSONThreadedPoller::go() {
 
 		sf::Http::Response response = http.sendRequest(request);
 
+
 #ifdef __DEBUG__
 		std::cout << "status: " << response.getStatus() << std::endl;
 		std::cout << "HTTP version: " << response.getMajorHttpVersion() << "."
@@ -198,7 +199,7 @@ void JSONThreadedPoller::go() {
 					for (std::vector<interface::Delegate*>::iterator it =
 							this->delegates.begin();
 							it != this->delegates.end(); it++) {
-						auto & delegate = *it;
+						interface::Delegate*& delegate = *it;
 						delegate->ReceiveMessage(ev);
 					} // End ping delegates
 				} // end if not 404
