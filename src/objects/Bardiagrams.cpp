@@ -21,11 +21,11 @@ Bardiagrams::Bardiagrams(int numCols) :
 }
 
 Bardiagrams::~Bardiagrams() {
-    // TODO Auto-generated destructor stub
+
 }
 
-void Bardiagrams::Ping(int value) {
-    this->shapes[rotate++ % this->shapes.size()].setValue(value);
+void Bardiagrams::ReceiveMessage(event::Event& ev) {
+    this->shapes[rotate++ % this->shapes.size()].setValue(ev.GetValue());
 }
 
 void Bardiagrams::Update() {

@@ -32,7 +32,7 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1490255460" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__DEBUG__"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.include.paths.1674735051" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.cpp.compiler.option.include.paths.1674735051" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.549708949" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -49,6 +49,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1920011502" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.libs.443788319" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="sfml-network"/>
+									<listOptionValue builtIn="false" value="X11"/>
 									<listOptionValue builtIn="false" value="sfml-window"/>
 									<listOptionValue builtIn="false" value="sfml-system"/>
 									<listOptionValue builtIn="false" value="sfml-graphics"/>

@@ -23,7 +23,7 @@ void AnimatedRectangle::setHorizontalOffset(float horizontalOffset) {
 }
 
 AnimatedRectangle::~AnimatedRectangle() {
-    // TODO Auto-generated destructor stub
+
 }
 
 void AnimatedRectangle::setValue(float value) {

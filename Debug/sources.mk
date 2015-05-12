@@ -26,4 +26,5 @@ SUBDIRS := \
 src/objects \
 src/json11 \
 src \
+src/event \
 

@@ -9,12 +9,13 @@
 #define OBJECTS_PROGRESSBAR_H_
 
 #include <interface/Delegate.h>
+#include <event/Event.h>
+
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
+
 
 #include <iostream>
 
@@ -24,18 +25,19 @@ class Progressbar: public sf::Drawable,
         public interface::Delegate,
         public sf::Transformable {
 public:
-    Progressbar();
+    Progressbar(int);
     virtual ~Progressbar();
     void Update();
     void draw(sf::RenderTarget& target,
             sf::RenderStates states) const ;
     void SetValue(int value);
-    void Ping(int value);
+    void ReceiveMessage(event::Event&);
 
 private:
     sf::RectangleShape messageLoader;
     sf::Text tekst;
     sf::Font font;
+    int screen_w;
 };
 
 } /* namespace objects */

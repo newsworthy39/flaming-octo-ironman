@@ -26,7 +26,7 @@ public:
     Bardiagrams( int numCols);
     virtual ~Bardiagrams();
     void Update();
-    void Ping(int value);
+    void ReceiveMessage(event::Event&);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
     std::vector<objects::AnimatedRectangle> shapes;

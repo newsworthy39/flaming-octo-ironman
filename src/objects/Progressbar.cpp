@@ -9,10 +9,10 @@
 
 namespace objects {
 
-Progressbar::Progressbar() {
+Progressbar::Progressbar(int screen_w) : screen_w(screen_w) {
 
     font.loadFromFile(
-            "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
+            "/home/gandalf/git/flaming-octo-ironman/src/font/Roboto-Light.ttf");
 
     tekst.setFont(font);
     tekst.setString("0");
@@ -33,8 +33,8 @@ void Progressbar::Update() {
     // TODO Nothing to do.
 }
 
-void Progressbar::Ping(int value) {
-    this->SetValue(value);
+void Progressbar::ReceiveMessage(event::Event & ev ) {
+    this->SetValue(ev.GetValue());
 }
 
 void Progressbar::draw(sf::RenderTarget& target,
@@ -44,7 +44,7 @@ void Progressbar::draw(sf::RenderTarget& target,
 }
 
 void Progressbar::SetValue(int value) {
-    messageLoader.setSize(sf::Vector2f(value, 10));
+    messageLoader.setSize(sf::Vector2f(std::min(screen_w - 40, value), 10));
     tekst.setCharacterSize(20);
     tekst.setColor(sf::Color(0, 0, 0));
     tekst.setPosition(sf::Vector2f(20, 440));

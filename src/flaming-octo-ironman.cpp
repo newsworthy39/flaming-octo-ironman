@@ -1,6 +1,13 @@
 /**
  * Author: newsworthy39
- * Documentation: http://www.sfml-dev.org/documentation/2.2/
+ *
+ * The color-scheme, used here-in is at:
+ *   http://paletton.com/#uid=7000u0kwi++bu++hX++++rd++kX
+ * The SFML documentation, is located at:
+ *   Documentation: http://www.sfml-dev.org/documentation/2.2/
+ * The json11 library used here-in is:
+ *   https://github.com/dropbox/json11, Copyright (c) 2013 Dropbox, Inc.
+ *
  */
 
 #include <iostream>
@@ -9,70 +16,80 @@
 #include <functional>
 #include <random>
 
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
+
+#include <X11/Xlib.h>
 
 #include "objects/AnimatedRectangle.h"
 #include "objects/Bardiagrams.h"
 #include "objects/Progressbar.h"
 #include "JSONThreadedPoller.h"
 
-#define SCREEN_W 1024
-#define SCREEN_H 768
-//
-//sf::String tekst;
-//
-sf::RectangleShape messageLoader;
+#define SCREEN_W 640
+#define SCREEN_H 480
 
 int main() {
 
-    jsonevents::JSONThreadedPoller poller;
+	// initialize X11
+	if (0 == XInitThreads()) {
+		std::cerr << "Threads are not supported, on this platform, abortin."
+				<< std::endl;
+		exit(-1);
+	}
 
-    sf::ContextSettings context;
+	sf::ContextSettings context;
+	context.antialiasingLevel = 4;
 
-    context.antialiasingLevel = 4;
+	sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), "SFML works!",
+			sf::Style::Close, context);
 
-    sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), "SFML works!",
-            sf::Style::Close, context);
+	window.setFramerateLimit(60);
 
-    window.setFramerateLimit(60);
+	// Jsonthreaded poller
+	jsonevents::JSONThreadedPoller poller("http://force.mjay.me", 80);
 
-    objects::Bardiagrams diagrams ( ( SCREEN_W / 20 ) - 1 ) ;
-    objects::Progressbar messageBar;
+	// Objects used, here-in.
+	objects::Bardiagrams diagrams(( SCREEN_W / 21) - 1);
+	objects::Progressbar messageBar ( SCREEN_W );
 
-    poller.AddDelegate(diagrams);
-    poller.SetProgressbar(messageBar);
+	// Add callback, to objects, to receive events.
+	poller.AddDelegate(diagrams);
+	poller.SetProgressbar(messageBar);
 
-    // Start it.
-    poller.Start();
+	// Start json-poller.
+	poller.Start();
 
-    while (window.isOpen()) {
+	// Begin rendering-loop.
+	while (window.isOpen()) {
 
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed
-                    || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                window.close();
-                poller.Stop();
-            }
-        }
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed
+					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				window.close();
+				poller.Stop();
+			}
+		}
 
-        diagrams.Update();
-        messageBar.Update();
+		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
+		diagrams.Update();
+		messageBar.Update();
 
-        window.clear(sf::Color(89, 217, 217));
+		// We like our color-scheme.
+		window.clear(sf::Color(89, 217, 217));
 
+		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
 		window.draw(messageBar);
-        window.draw(diagrams);
+		window.draw(diagrams);
 
-        // Show display.
-        window.display();
-    }
+		// Show display.
+		window.display();
+	}
 
-    // make entirely sure.
-    poller.Stop();
+	// make entirely sure.
+	poller.Stop();
 
-    return 0;
+	return 0;
 }

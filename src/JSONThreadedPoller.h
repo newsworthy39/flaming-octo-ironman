@@ -19,14 +19,15 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-#include "json11/json11.hpp"
-#include "interface/Delegate.h"
+#include <json11/json11.hpp>
+#include <interface/Delegate.h>
+#include <event/Event.h>
 
 namespace jsonevents {
 
 class JSONThreadedPoller {
 public:
-    JSONThreadedPoller();
+    JSONThreadedPoller(const std::string host, int port = 80);
     virtual ~JSONThreadedPoller();
     void Start();
     void Stop();
@@ -38,11 +39,14 @@ public:
 private:
     void go();
     bool isRunning ;
-    sf::Thread m_thread;
+    sf::Thread sfThread;
     int lompartTimestamp;
 
     interface::Delegate* messageLoader;
     std::vector<interface::Delegate*> delegates;
+
+	sf::Http http;
+
 };
 
 } /* namespace jsonevents */

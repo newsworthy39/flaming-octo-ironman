@@ -12,8 +12,6 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-#include "interface/Delegate.h"
-
 namespace objects {
 
 class AnimatedRectangle : public sf::Drawable, public sf::Transformable {
