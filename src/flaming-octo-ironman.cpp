@@ -14,9 +14,10 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-#include "AnimatedRectangle.h"
+#include "objects/AnimatedRectangle.h"
+#include "objects/Bardiagrams.h"
+#include "objects/Progressbar.h"
 #include "JSONThreadedPoller.h"
-#include "Bardiagrams.h"
 
 #define SCREEN_W 1024
 #define SCREEN_H 768
@@ -39,21 +40,10 @@ int main() {
     window.setFramerateLimit(60);
 
     objects::Bardiagrams diagrams ( ( SCREEN_W / 20 ) - 1 ) ;
-    objects::Progressbar messageBar ();
+    objects::Progressbar messageBar;
 
     poller.AddDelegate(diagrams);
-    poller.AddDelegate(messageBar);
-
-//    sf::Text text;
-//    sf::Font font;
-//    font.loadFromFile(
-//            "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
-//
-//    text.setFont(font);
-//    text.setCharacterSize(20);
-//    text.setColor(sf::Color(0, 0, 0));
-//    text.setPosition(sf::Vector2f(20, 440));
-//
+    poller.SetProgressbar(messageBar);
 
     // Start it.
     poller.Start();
@@ -71,8 +61,6 @@ int main() {
 
         diagrams.Update();
         messageBar.Update();
-
-       // text.setString(tekst);
 
         window.clear(sf::Color(89, 217, 217));
 

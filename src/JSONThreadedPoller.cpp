@@ -23,16 +23,12 @@ void JSONThreadedPoller::Start() {
 
     this->isRunning = true;
 
-    std::cout << "STarting json thread" << std::endl;
-
     this->m_thread.launch();
 }
 
 void JSONThreadedPoller::Stop() {
 
     this->isRunning = false;
-
-    std::cout << "Stopping json thread" << std::endl;
 
     this->m_thread.wait();
 
@@ -42,12 +38,31 @@ void JSONThreadedPoller::AddDelegate(interface::Delegate & delegate) {
     this->delegates.push_back(&delegate);
 }
 
+void JSONThreadedPoller::RemoveDelegate(interface::Delegate & delegate) {
+    for (std::vector<interface::Delegate*>::iterator it =
+            this->delegates.begin(); it != this->delegates.end(); it++) {
+        auto & mVecdelegate = *it;
+
+        // Address cmp, ? (can i haz that)
+        if (mVecdelegate == &delegate) {
+            this->delegates.erase(it);
+        }
+    }
+}
+
+void JSONThreadedPoller::SetProgressbar(interface::Delegate& pbar) {
+    this->messageLoader = &pbar;
+}
+
+void JSONThreadedPoller::RemoveProgressbar() {
+    this->messageLoader = NULL;
+}
+
 void JSONThreadedPoller::go() {
 
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(3, 7);
-
 
     sf::Http http;
     http.setHost("http://force.mjay.me");
@@ -166,16 +181,19 @@ void JSONThreadedPoller::go() {
 
                     int value = json["data"].int_value();
 
-                    /* shapes[rotate++ % shapes.size()].setValue(value);
+                     //tekst = std::to_string(numMessages - i);
+                     //tekst = std::to_string(); */
 
-                     // 'Demo-purpose only.
-                     messageLoader.setSize(sf::Vector2f(numMessages - i, 10));
+                    // 'Demo-purpose only.
+                    this->messageLoader->Ping(numMessages - i);
 
-                     tekst = std::to_string(numMessages - i);
-                     //tekst = std::to_string();*/
+                    for (std::vector<interface::Delegate*>::iterator it =
+                            this->delegates.begin();
+                            it != this->delegates.end(); it++) {
+                        auto & delegate = *it;
 
-
-                    this->delegates[0]->Ping(value);
+                        delegate->Ping(value);
+                    }
                 }
             }
         }

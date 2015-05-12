@@ -31,12 +31,17 @@ public:
     void Start();
     void Stop();
     void AddDelegate(interface::Delegate &);
+    void RemoveDelegate(interface::Delegate &);
+
+    void SetProgressbar(interface::Delegate& pbar) ;
+    void RemoveProgressbar();
 private:
     void go();
     bool isRunning ;
     sf::Thread m_thread;
     int lompartTimestamp;
 
+    interface::Delegate* messageLoader;
     std::vector<interface::Delegate*> delegates;
 };
 
