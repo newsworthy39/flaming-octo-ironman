@@ -9,45 +9,55 @@
 
 namespace scenes {
 
-Dashboard::Dashboard(int screen_width) :
-        shapes(screen_width / 20 - 1), rotate(0), messageBar(screen_width) {
-
-    for (std::vector<scenes::AnimatedRectangle>::size_type i = 0;
-            i != shapes.size(); i++) {
-        shapes[i].setHorizontalOffset((1 + i) * 20);
-    }
+Dashboard::Dashboard(sf::Vector2f coords, sf::Vector2f dimensions) {
+	this->setPosition(coords);
+	this->dimensions = dimensions;
+	this->messageBar.setPosition(sf::Vector2f(coords.x, dimensions.y - 50));
+	this->animatedRectangle.setPosition(sf::Vector2f(coords.x, coords.y));
 }
 
 Dashboard::~Dashboard() {
-
+	 // TODO: Unregister stuff here.
 }
 
-void Dashboard::ReceiveMessage(event::Event& ev) {
-    this->shapes[rotate++ % this->shapes.size()].setValue(ev.GetValue());
+/**
+ * Dashboard::ReceiveEventDelegateStatus
+ * Receives a message, when arrived.
+ */
+void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
+	switch(e) {
+		case event::Event::MESSAGESPENDING : {
+			this->messageBar.SetValue(data["messagepending"].int_value());
+		}; break;
+		case event::Event::MESSAGE: {
+			std::string stringValue = data["message"].string_value();
+			std::cout << "Got " << stringValue << std::endl;
+			//int intValue = data["message"].int_value();
 
-}
-
-void Dashboard::ReceiveEventDelegateStatus(event::Event& ev) {
-    this->messageBar.ReceiveMessage(ev);
+			if (0 == stringValue.compare("websiteaccess")) {
+				this->animatedRectangle.setValue(10);
+			}
+			//this->animatedRectangle.setValue(data["message"].int_value());
+		}; break;
+		case event::Event::UPDATE: {
+			this->UpdateEverything();
+		}; break;
+	}
 }
 
 void Dashboard::Update() {
-    for (std::vector<scenes::AnimatedRectangle>::iterator it = this->shapes.begin();
-            it != this->shapes.end(); ++it) {
-        (*it).Update();
-    }
-
     this->messageBar.Update();
+    this->animatedRectangle.Update();
+}
+
+void Dashboard::UpdateEverything() {
+	std::cout << "Somebody, wanted to do a complete refresh" << std::endl;
 }
 
 void Dashboard::draw(sf::RenderTarget& target,
         sf::RenderStates states) const {
-    for (std::vector<scenes::AnimatedRectangle>::size_type i = 0;
-            i != shapes.size(); i++) {
-        target.draw(shapes[i], states);
-    }
-
-    target.draw(messageBar, states);
+	target.draw(this->messageBar, states);
+    target.draw(this->animatedRectangle, states);
 }
 
 } /* namespace objects */

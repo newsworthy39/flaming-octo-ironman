@@ -9,21 +9,11 @@
 #define EVENT_H_
 
 #include <iostream>
-#include <functional>
+#include <string>
 
 namespace event {
 
-
-class Event {
-public:
-	Event(int value) { this->val = value; }
-	virtual ~Event() { };
-	void SetValue(int value) { this->val = value; }
-	int GetValue() { return this->val; }
-
-private:
-	int val;
-};
+enum class Event { MESSAGESPENDING, MESSAGE, UPDATE };
 
 } /* namespace event */
 

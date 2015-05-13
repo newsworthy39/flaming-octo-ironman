@@ -13,7 +13,6 @@ JSONThreadedPoller::JSONThreadedPoller(const std::string host, int port) :
         sfThread(&JSONThreadedPoller::go, this) {
     this->isRunning = false;
     this->lompartTimestamp = 9999999;
-    this->messageLoader = NULL;
     this->http.setHost(host, port);
 }
 
@@ -50,14 +49,6 @@ void JSONThreadedPoller::RemoveDelegate(interface::Delegate & delegate) {
             this->delegates.erase(it);
         }
     }
-}
-
-void JSONThreadedPoller::AddEventStatusDelegate(interface::EventDelegateStatus& pbar) {
-    this->messageLoader = &pbar;
-}
-
-void JSONThreadedPoller::RemoveEventStatusDelegate() {
-    this->messageLoader = NULL;
 }
 
 void JSONThreadedPoller::go() {
@@ -189,21 +180,20 @@ void JSONThreadedPoller::go() {
                      * This section, should probably be replaced, with a json-parser, that
                      * reads and parses the message-structures, and creates the appropriate
                      * objects for delegation. Use virtual, to let the compiler decide, via
-                     * its interface.
+                     * its interface. Also. Seperate, this into a deque, allowing the main update
+                     * thread, to inject update-data messages, without the involvement of the server.
                      */
-                    int value = json["data"].int_value();
-
-                    event::Event numMsg(numMessages - i);
-                    this->messageLoader->ReceiveEventDelegateStatus(numMsg);
-
-                    event::Event ev(value);
                     for (std::vector<interface::Delegate*>::iterator it =
                             this->delegates.begin();
                             it != this->delegates.end(); it++) {
+                    	interface::Delegate*& delegate = *it;
+                    	// Send update (if applicable)
+                    	if (numMessages > 1 ) {
+                    		json11::Json pending = json11::Json::object { { "messagespending", value - i } };
+                    		delegate->ReceiveMessage(event::Event::MESSAGESPENDING, pending);
+                    	}
 
-                        interface::Delegate*& delegate = *it;
-
-                        delegate->ReceiveMessage(ev);
+                        delegate->ReceiveMessage(event::Event::MESSAGE, json);
 
                     } // End ping delegates
                 } // end if not 404

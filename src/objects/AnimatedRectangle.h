@@ -12,25 +12,23 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-namespace scenes {
+#include <iostream>
+
+namespace objects {
 
 class AnimatedRectangle : public sf::Drawable, public sf::Transformable {
 public:
     AnimatedRectangle();
     virtual ~AnimatedRectangle();
-
     void setValue(float value);
     void setHorizontalOffset(float horizontalOffset);
-    void setRotate(float degrees);
     void Update();
-
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
     sf::RectangleShape shape;
     float newValue;
     float prevValue;
-    float horizontalOffset;
-    float rotate;
+
 };
 
 } /* namespace objects */

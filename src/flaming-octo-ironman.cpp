@@ -48,11 +48,10 @@ int main() {
 	events::JSONThreadedPoller poller("http://force.mjay.me", 80);
 
 	// Objects used, here-in.
-	scenes::Dashboard dashboard(SCREEN_W);
+	scenes::Dashboard dashboard(sf::Vector2f(20,20), sf::Vector2f(SCREEN_W, SCREEN_H));
 
 	// Add callback, to objects, to receive events.
 	poller.AddDelegate(dashboard);
-	poller.AddEventStatusDelegate(dashboard);
 
 	// Start json-poller.
 	poller.Start();
@@ -67,11 +66,15 @@ int main() {
 				window.close();
 				poller.Stop();
 			}
+
+			// Fake, an overall event. (synchron)
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
+			    dashboard.UpdateEverything();
+			}
 		}
 
 		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
 		dashboard.Update();
-
 
 		// We like our color-scheme.
 		window.clear(sf::Color(89, 217, 217));
