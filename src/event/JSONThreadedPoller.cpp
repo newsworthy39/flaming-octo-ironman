@@ -17,7 +17,7 @@ JSONThreadedPoller::JSONThreadedPoller(const std::string host, int port) :
 }
 
 JSONThreadedPoller::~JSONThreadedPoller() {
-    // TODO Auto-generated destructor stub
+    // FIXME: JsonThreadedPoller destructor is empty. Should it?
 }
 
 void JSONThreadedPoller::Start() {
@@ -35,12 +35,12 @@ void JSONThreadedPoller::Stop() {
 
 }
 
-void JSONThreadedPoller::AddDelegate(interface::Delegate & delegate) {
+void JSONThreadedPoller::AddObserver(interface::Observable & delegate) {
     this->delegates.push_back(&delegate);
 }
 
-void JSONThreadedPoller::RemoveDelegate(interface::Delegate & delegate) {
-    for (std::vector<interface::Delegate*>::iterator it =
+void JSONThreadedPoller::RemoveObserver(interface::Observable & delegate) {
+    for (std::vector<interface::Observable*>::iterator it =
             this->delegates.begin(); it != this->delegates.end(); it++) {
         auto & mVecdelegate = *it;
 
@@ -55,7 +55,7 @@ void JSONThreadedPoller::go() {
 
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(3, 7);
+    std::uniform_real_distribution<double> dist(5, 15);
 
     /**
      * Let two threads, share the lompartTimestamp (jikes!)
@@ -75,7 +75,7 @@ void JSONThreadedPoller::go() {
 
         request.setMethod(sf::Http::Request::Method::Get);
 
-        request.setUri("/msg.php");
+        request.setUri("/view/token?type=raw");
 
         request.setHttpVersion(1, 0); // HTTP 1.0
 
@@ -83,6 +83,8 @@ void JSONThreadedPoller::go() {
         // in loadbalancing equipment, also to allow for cache-equipment, to
         // use as like a vary-by-header.
         request.setField("x-lompart-token", std::to_string(lompartTimestamp));
+
+        request.setField("Connection", "Close");
 
         json11::Json my_json = json11::Json::object { { "x-lompart-token",
                 lompartTimestamp }, };
@@ -127,14 +129,16 @@ void JSONThreadedPoller::go() {
 
             sf::Http::Request request;
 
-            for (int i = 0; i < numMessages; i++) {
+            for (int i = 1; i <= numMessages; i++) {
 
                 if (this->isRunning == false)
                     break;
 
                 request.setMethod(sf::Http::Request::Method::Get);
 
-                request.setUri("/getmsg.php");
+                char buffer[64];
+                std::sprintf(buffer, "/view/token-%d?type=raw", lompartTimestamp + i);
+                request.setUri(buffer);
 
                 /*
                  * TODO: Change, the sfml-dev http library, as
@@ -148,6 +152,8 @@ void JSONThreadedPoller::go() {
                 // use as like a vary-by-header.
                 request.setField("x-lompart-token",
                         std::to_string(lompartTimestamp));
+
+                request.setField("Connection", "Close");
 
                 json11::Json my_json = json11::Json::object { {
                         "x-lompart-token", lompartTimestamp + i }, };
@@ -183,16 +189,16 @@ void JSONThreadedPoller::go() {
                      * its interface. Also. Seperate, this into a deque, allowing the main update
                      * thread, to inject update-data messages, without the involvement of the server.
                      */
-                    for (std::vector<interface::Delegate*>::iterator it =
+                    for (std::vector<interface::Observable*>::iterator it =
                             this->delegates.begin();
                             it != this->delegates.end(); it++) {
-                    	interface::Delegate*& delegate = *it;
-                    	// Send update (if applicable)
-                    	if (numMessages > 1 ) {
-                    		json11::Json pending = json11::Json::object { { "messagespending", value - i } };
-                    		delegate->ReceiveMessage(event::Event::MESSAGESPENDING, pending);
-                    	}
+                    	interface::Observable*& delegate = *it;
 
+                    	// Send update (if applicable)
+                    	json11::Json pending = json11::Json::object { { "messagespending", numMessages - i } };
+                    	delegate->ReceiveMessage(event::Event::MESSAGESPENDING, pending);
+
+                    	// Sned message.
                         delegate->ReceiveMessage(event::Event::MESSAGE, json);
 
                     } // End ping delegates

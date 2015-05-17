@@ -25,6 +25,10 @@ void AnimatedRectangle::setValue(float value) {
     this->newValue = value;
 }
 
+const float AnimatedRectangle::GetValue() {
+    return this->newValue;
+}
+
 void AnimatedRectangle::Update() {
 
     float diffRadius = (this->prevValue - this->newValue) / 16;

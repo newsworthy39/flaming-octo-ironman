@@ -14,14 +14,12 @@
 #include <random>
 #include <iostream>
 #include <vector>
-
+#include <event/Event.h>
+#include <interface/Observable.h>
+#include <json11/json11.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
-
-#include <json11/json11.hpp>
-#include <event/Event.h>
-#include <interface/Delegate.h>
 
 namespace events {
 
@@ -31,15 +29,15 @@ public:
     virtual ~JSONThreadedPoller();
     void Start();
     void Stop();
-    void AddDelegate(interface::Delegate &);
-    void RemoveDelegate(interface::Delegate &);
+    void AddObserver(interface::Observable &);
+    void RemoveObserver(interface::Observable &);
 
 private:
     void go();
     bool isRunning ;
     sf::Thread sfThread;
     int lompartTimestamp;
-    std::vector<interface::Delegate*> delegates;
+    std::vector<interface::Observable*> delegates;
 	sf::Http http;
 
 };

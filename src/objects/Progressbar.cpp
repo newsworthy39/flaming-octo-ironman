@@ -11,7 +11,7 @@ namespace objects {
 
 Progressbar::Progressbar() {
 	font.loadFromFile(
-			"/home/gandalf/git/flaming-octo-ironman/src/font/Roboto-Light.ttf");
+			"/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
 
 	tekst.setFont(font);
 	tekst.setString("0");
@@ -21,13 +21,13 @@ Progressbar::Progressbar() {
 }
 
 Progressbar::~Progressbar() {
-	// TODO Auto-generated destructor stub
+	// FIXME: Progressbar destructor is empty.
 }
 
 void Progressbar::Update() {
 
 	tekst.setPosition(this->getPosition());
-	messageLoader.setPosition(this->getPosition() + sf::Vector2f(0, 40));
+	messageLoader.setPosition(this->getPosition() + sf::Vector2f(0, 30));
 }
 
 void Progressbar::draw(sf::RenderTarget& target,

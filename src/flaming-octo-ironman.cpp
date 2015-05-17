@@ -15,23 +15,21 @@
 #include <thread>
 #include <functional>
 #include <random>
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-
-#include <X11/Xlib.h>
 #include <event/JSONThreadedPoller.h>
 #include <scenes/Dashboard.h>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <X11/Xlib.h>
 
-#define SCREEN_W 640
-#define SCREEN_H 480
+// FIXME: Screen width and height, should not de a static compile.
+#define SCREEN_W 1280
+#define SCREEN_H 720
 
 int main() {
 
 	// initialize X11
 	if (0 == XInitThreads()) {
-		std::cerr << "Threads are not supported, on this platform, abortin."
+		std::cerr << "Threads are not supported, on this platform, aborting."
 				<< std::endl;
 		exit(-1);
 	}
@@ -39,19 +37,21 @@ int main() {
 	sf::ContextSettings context;
 	context.antialiasingLevel = 4;
 
-	sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), "SFML works!",
+	sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), "Flaming-octo-ironman",
 			sf::Style::Close, context);
 
 	window.setFramerateLimit(60);
 
 	// Jsonthreaded poller
-	events::JSONThreadedPoller poller("http://force.mjay.me", 80);
+	events::JSONThreadedPoller poller("http://ubuntu64bit-msgstack00.lan", 9999);
 
 	// Objects used, here-in.
-	scenes::Dashboard dashboard(sf::Vector2f(20,20), sf::Vector2f(SCREEN_W, SCREEN_H));
+	scenes::Dashboard dashboard(sf::Vector2f(20,20));
+	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
+	dashboard.Refresh();
 
 	// Add callback, to objects, to receive events.
-	poller.AddDelegate(dashboard);
+	poller.AddObserver(dashboard);
 
 	// Start json-poller.
 	poller.Start();
@@ -69,7 +69,15 @@ int main() {
 
 			// Fake, an overall event. (synchron)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-			    dashboard.UpdateEverything();
+			    dashboard.Refresh();
+			}
+
+			if (event.type == sf::Event::Resized) {
+#ifdef __DEBUG__
+			    std::cout << "The window was resized" << std::endl;
+#endif
+			    dashboard.SetDimensions((sf::Vector2f)window.getSize());
+			    //dashboard.Refresh();
 			}
 		}
 
@@ -77,7 +85,8 @@ int main() {
 		dashboard.Update();
 
 		// We like our color-scheme.
-		window.clear(sf::Color(89, 217, 217));
+		//window.clear(sf::Color(89, 217, 217));
+		window.clear(sf::Color(0,0,0));
 
 		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
 		window.draw(dashboard);

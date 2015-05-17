@@ -48,7 +48,7 @@ all: flaming-octo-ironman
 flaming-octo-ironman: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "flaming-octo-ironman" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"/home/gandalf/workspace/flaming-octo-ironman/libs/SFML-2.2/lib" -o "flaming-octo-ironman" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

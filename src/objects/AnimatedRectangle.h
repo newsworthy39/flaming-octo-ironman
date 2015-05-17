@@ -21,6 +21,7 @@ public:
     AnimatedRectangle();
     virtual ~AnimatedRectangle();
     void setValue(float value);
+    const float GetValue();
     void setHorizontalOffset(float horizontalOffset);
     void Update();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
