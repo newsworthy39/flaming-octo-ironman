@@ -25,7 +25,8 @@ C_DEPS :=
 SUBDIRS := \
 src/scenes \
 src/objects \
-src/json12 \
+src/json11 \
 src \
 src/event \
+src/json12 \
 

@@ -11,6 +11,7 @@ RM := rm -rf
 -include src/scenes/subdir.mk
 -include src/objects/subdir.mk
 -include src/json12/subdir.mk
+-include src/json11/subdir.mk
 -include src/event/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
