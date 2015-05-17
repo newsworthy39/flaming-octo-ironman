@@ -62,9 +62,7 @@ void Dashboard::Refresh() {
         p->Refresh();
 
         this->m_RssMembers.push_back(p);
-
     }
-
 }
 
 /**

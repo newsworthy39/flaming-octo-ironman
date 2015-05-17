@@ -12,9 +12,9 @@
 #include <vector>
 #include <json11/json11.hpp>
 #include <interface/Observable.h>
-#include <objects/AnimatedRectangle.h>
-#include <objects/Progressbar.h>
-#include <objects/RssItemLargePanel.h>
+#include <objects/AnimatedRectangle.hpp>
+#include <objects/Progressbar.hpp>
+#include <objects/RssItemLargePanel.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Network.hpp>

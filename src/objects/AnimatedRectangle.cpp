@@ -5,7 +5,7 @@
  *      Author: gandalf
  */
 
-#include "AnimatedRectangle.h"
+#include "AnimatedRectangle.hpp"
 
 namespace objects {
 

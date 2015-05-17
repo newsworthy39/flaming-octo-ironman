@@ -5,7 +5,7 @@
  *      Author: gandalf
  */
 
-#include <objects/RssItemLargePanel.h>
+#include <objects/RssItemLargePanel.hpp>
 
 namespace objects {
 
