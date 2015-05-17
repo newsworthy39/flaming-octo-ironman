@@ -27,27 +27,23 @@ public:
 
     void Refresh();
 
-    void SetHost(sf::String host);
+
     void SetTeaser(sf::String teaser);
     void SetHeadline(sf::String headline);
     void SetByline(sf::String byline);
-    void SetImagePath(sf::String imagePath);
+    void SetMediaPath(sf::String mediaPath);
     void SetDimensions(sf::Vector2f dimensions);
-
 
     // sf::Drawable
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
-
     bool downloadImages();
-
     sf::Font            m_font_h1;
     sf::Font            m_font_h2;
     sf::Font            m_font_byline;
 
-    sf::String          m_imagePath;
-    sf::String          m_host;
+    sf::String          m_mediaPath;
     sf::Vector2f        m_dimensions;
     sf::Texture         m_texture;
     sf::Sprite          m_sprite;

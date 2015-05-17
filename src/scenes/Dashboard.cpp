@@ -27,13 +27,13 @@ Dashboard::~Dashboard() {
 
 void Dashboard::Refresh() {
 
-    sf::Http http("http://ubuntu64bit-msgstack00.lan", 10000);
+    sf::Http http("http://localhost", 9001);
 
     sf::Http::Request request;
 
     request.setMethod(sf::Http::Request::Method::Get);
 
-    request.setUri("/view/ebrss?type=raw");
+    request.setUri("/view/dashboard?type=raw");
 
     request.setHttpVersion(1, 1); // HTTP 1.0
 
@@ -42,6 +42,8 @@ void Dashboard::Refresh() {
     sf::Http::Response response = http.sendRequest(request);
 
     if (response.getStatus() == sf::Http::Response::Ok) {
+
+        this->m_RssMembers.clear();
 
         // foreach, that shit.
         std::string err;
@@ -53,8 +55,7 @@ void Dashboard::Refresh() {
 
         objects::RssItemLargePanel * p = new objects::RssItemLargePanel();
         p->SetDimensions(this->m_dimensions);
-        p->SetHost(json["host"].string_value());
-        p->SetImagePath(json["imagepath"].string_value());
+        p->SetMediaPath(json["mediapath"].string_value());
         p->SetHeadline(json["headline"].string_value());
         p->SetTeaser(json["teaser"].string_value());
         p->SetByline(json["byline"].string_value());
@@ -92,7 +93,7 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
     case event::Event::UPDATE: {
         this->Refresh();
     }
-        ;
+
         break;
     }
 }

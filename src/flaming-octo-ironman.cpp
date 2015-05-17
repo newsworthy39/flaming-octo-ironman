@@ -43,7 +43,7 @@ int main() {
 	window.setFramerateLimit(60);
 
 	// Jsonthreaded poller
-	events::JSONThreadedPoller poller("http://ubuntu64bit-msgstack00.lan", 9999);
+	events::JSONThreadedPoller poller("http://localhost", 9000);
 
 	// Objects used, here-in.
 	scenes::Dashboard dashboard;

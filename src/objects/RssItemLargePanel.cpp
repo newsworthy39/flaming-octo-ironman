@@ -11,7 +11,7 @@ namespace objects {
 
 RssItemLargePanel::RssItemLargePanel() {
 
-    this->m_imagePath = "/favicon.ico";
+    this->m_mediaPath = "/favicon.ico";
 
     this->m_dimensions = sf::Vector2f(640, 480);
 
@@ -19,7 +19,7 @@ RssItemLargePanel::RssItemLargePanel() {
 
     this->m_slideY = 0.0f;
 
-    this->m_slideDelta = 0.1f;
+    this->m_slideDelta = 0.2f;
 
     this->m_font_h1.loadFromFile(
             "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Regular.ttf");
@@ -54,7 +54,8 @@ void RssItemLargePanel::SetTeaser(sf::String t) {
     int numCharsOnALine = 100;
     int numLines = std::ceil(t.getSize() / numCharsOnALine);
 #ifdef __DEBUG__
-    std::cout << "Teaser " << t.toAnsiString() << "Lines is " << numLines << std::endl;
+    std::cout << "Teaser " << t.toAnsiString() << "Lines is " << numLines
+            << std::endl;
 #endif
     for (int i = 0; i < numLines; i++) {
         int findblank = t.find(' ', numCharsOnALine * (i + 1));
@@ -71,7 +72,8 @@ void RssItemLargePanel::SetHeadline(sf::String t) {
     int numCharsOnALine = 100;
     int numLines = std::ceil(t.getSize() / numCharsOnALine);
 #ifdef __DEBUG__
-    std::cout << "Headline " << t.toAnsiString() << "Lines is " << numLines << std::endl;
+    std::cout << "Headline " << t.toAnsiString() << "Lines is " << numLines
+            << std::endl;
 #endif
     for (int i = 0; i < numLines; i++) {
         int findblank = t.find(' ', numCharsOnALine * (i + 1));
@@ -99,12 +101,8 @@ void RssItemLargePanel::SetByline(sf::String t) {
     this->m_byline.setString(t);
 }
 
-void RssItemLargePanel::SetHost(sf::String host) {
-    this->m_host = host;
-}
-
-void RssItemLargePanel::SetImagePath(sf::String imagePath) {
-    this->m_imagePath = imagePath;
+void RssItemLargePanel::SetMediaPath(sf::String imagePath) {
+    this->m_mediaPath = imagePath;
 }
 
 void RssItemLargePanel::SetDimensions(sf::Vector2f dimensions) {
@@ -151,8 +149,18 @@ void RssItemLargePanel::Refresh() {
     /**
      * finally, fix the image.
      */
-    float sx = this->m_texture.getSize().x / this->m_dimensions.x;
-    float sy = this->m_texture.getSize().y / this->m_dimensions.y;
+    float xMax = std::min((float) this->m_texture.getSize().x,
+            this->m_dimensions.x);
+    float xMin = std::max((float) this->m_texture.getSize().x,
+            this->m_dimensions.x);
+
+    float yMax = std::min((float) this->m_texture.getSize().y,
+            this->m_dimensions.y);
+    float yMin = std::max((float) this->m_texture.getSize().y,
+            this->m_dimensions.y);
+
+    float sx = xMax / xMin;
+    float sy = yMax / yMin;
 
     float scale = std::min(sx, sy);
 
@@ -170,31 +178,39 @@ void RssItemLargePanel::Refresh() {
 
 bool RssItemLargePanel::downloadImages() {
 
-    if (this->m_imagePath.isEmpty()) {
+    if (this->m_mediaPath.isEmpty()) {
 #ifdef __DEBUG__
         std::cerr << "The RssItemLargePanel m_imagePath == 0" << std::endl;
 #endif
         return false;
     }
 
-    sf::Http http(this->m_host);
+    ssize_t t1 = this->m_mediaPath.find("http://", 0);
+    ssize_t t2 = this->m_mediaPath.find("/", t1 + 7);
+    sf::String host = this->m_mediaPath.substring(t1 + 7, t2 - (t1 + 7));
+    sf::String path = this->m_mediaPath.substring(t2,
+            this->m_mediaPath.getSize() - t2);
+
+    sf::Http http(host);
 
     sf::Http::Request request;
 
     request.setMethod(sf::Http::Request::Get);
 
-    request.setUri(this->m_imagePath);
+    request.setUri(path);
 
-    request.setHttpVersion(1, 1);
+    request.setHttpVersion(1, 0);
 
     request.setField("Connection", "Close");
+    request.setField("Accept", "image/webp");
+    request.setField("Accept-Encoding", "gzip, deflate");
+    request.setField("User-Agent", "libSFML2.2");
 
-    sf::Http::Response response = http.sendRequest(request);
+    sf::Http::Response response = http.sendRequest(request, sf::seconds(7));
 
 #ifdef __DEBUG__
     std::cout << "Image: " << response.getStatus() << ", from "
-            << this->m_host.toAnsiString() << " on "
-            << this->m_imagePath.toAnsiString() << "." << std::endl;
+            << this->m_mediaPath.toAnsiString() << "." << std::endl;
 #endif
 
     if (response.getStatus() == sf::Http::Response::Ok) {
@@ -210,7 +226,7 @@ bool RssItemLargePanel::downloadImages() {
 
         if (!status) {
             std::cerr << "Could not load image "
-                    << std::string(this->m_imagePath) << "." << std::endl;
+                    << std::string(this->m_mediaPath) << "." << std::endl;
             return false;
         }
 
