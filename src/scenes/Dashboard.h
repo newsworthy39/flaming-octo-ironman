@@ -8,13 +8,13 @@
 #ifndef DASHBOARD_H_
 #define DASHBOARD_H_
 
-#include <interface/Observable.h>
-#include <objects/AnimatedRectangle.h>
-#include <objects/Progressbar.h>
-#include <objects/EBdkImage.h>
 #include <iostream>
 #include <vector>
 #include <json11/json11.hpp>
+#include <interface/Observable.h>
+#include <objects/AnimatedRectangle.h>
+#include <objects/Progressbar.h>
+#include <objects/RssItemLargePanel.h>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Network.hpp>
@@ -27,7 +27,7 @@ class Dashboard: public sf::Transformable,
 
 public:
 
-    Dashboard(sf::Vector2f coords);
+    Dashboard();
     virtual ~Dashboard();
     void Update();
     void Refresh();
@@ -41,7 +41,7 @@ private:
 
     objects::AnimatedRectangle m_animatedRectangle;
     objects::Progressbar m_messageBar;
-    objects::EBdkImage m_ebdkimage;
+    std::vector<objects::RssItemLargePanel*> m_RssMembers;
     sf::Vector2f m_dimensions;
 
 };

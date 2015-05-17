@@ -65,11 +65,7 @@
 								</inputType>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1055343562" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
-								<option id="gnu.both.asm.option.include.paths.1291006786" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="../flaming-octo-ironman/libs/SFML-2.2/include"/>
-									<listOptionValue builtIn="false" value="../flaming-octo-ironman/libs/json11"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/flaming-octo-ironman/flaming-octo-ironman/src}&quot;"/>
-								</option>
+								<option id="gnu.both.asm.option.include.paths.1291006786" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.74961237" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>

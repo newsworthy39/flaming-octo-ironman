@@ -5,11 +5,11 @@
  *      Author: gandalf
  */
 
-#include <objects/EBdkImage.h>
+#include <objects/RssItemLargePanel.h>
 
 namespace objects {
 
-EBdkImage::EBdkImage() {
+RssItemLargePanel::RssItemLargePanel() {
 
     this->m_imagePath = "/favicon.ico";
 
@@ -40,7 +40,7 @@ EBdkImage::EBdkImage() {
 
 }
 
-void EBdkImage::SetTeaser(sf::String t) {
+void RssItemLargePanel::SetTeaser(sf::String t) {
 
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
 //    t.replace("ø", L"ø");
@@ -54,7 +54,7 @@ void EBdkImage::SetTeaser(sf::String t) {
     int numCharsOnALine = 100;
     int numLines = std::ceil(t.getSize() / numCharsOnALine);
 #ifdef __DEBUG__
-    std::cout << "Lines is " << numLines << std::endl;
+    std::cout << "Teaser " << t.toAnsiString() << "Lines is " << numLines << std::endl;
 #endif
     for (int i = 0; i < numLines; i++) {
         int findblank = t.find(' ', numCharsOnALine * (i + 1));
@@ -64,14 +64,14 @@ void EBdkImage::SetTeaser(sf::String t) {
     this->m_teaser.setString(t);
 }
 
-void EBdkImage::SetHeadline(sf::String t) {
+void RssItemLargePanel::SetHeadline(sf::String t) {
 
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
 
     int numCharsOnALine = 100;
     int numLines = std::ceil(t.getSize() / numCharsOnALine);
 #ifdef __DEBUG__
-    std::cout << "Lines is " << numLines << std::endl;
+    std::cout << "Headline " << t.toAnsiString() << "Lines is " << numLines << std::endl;
 #endif
     for (int i = 0; i < numLines; i++) {
         int findblank = t.find(' ', numCharsOnALine * (i + 1));
@@ -81,7 +81,7 @@ void EBdkImage::SetHeadline(sf::String t) {
     this->m_headline.setString(t);
 }
 
-void EBdkImage::SetByline(sf::String t) {
+void RssItemLargePanel::SetByline(sf::String t) {
 
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
     t.replace("ø", L"ø");
@@ -92,18 +92,28 @@ void EBdkImage::SetByline(sf::String t) {
     t.replace("Æ", L"Æ");
     t.replace("Å", L"Å");
 
+#ifdef __DEBUG__
+    std::cout << "Byline " << t.toAnsiString() << std::endl;
+#endif
+
     this->m_byline.setString(t);
 }
 
-void EBdkImage::SetImagePath(sf::String imagePath) {
+void RssItemLargePanel::SetHost(sf::String host) {
+    this->m_host = host;
+}
+
+void RssItemLargePanel::SetImagePath(sf::String imagePath) {
     this->m_imagePath = imagePath;
 }
 
-void EBdkImage::resizeObject(sf::Vector2f dimensions) {
-
-    this->PrepareImage();
-
+void RssItemLargePanel::SetDimensions(sf::Vector2f dimensions) {
     this->m_dimensions = dimensions;
+}
+
+void RssItemLargePanel::Refresh() {
+
+    this->downloadImages();
 
     this->m_rectangle[0] = sf::Vertex(sf::Vector2f(0, 200),
             sf::Color(0, 0, 0, 0));
@@ -158,9 +168,16 @@ void EBdkImage::resizeObject(sf::Vector2f dimensions) {
 
 }
 
-bool EBdkImage::PrepareImage() {
+bool RssItemLargePanel::downloadImages() {
 
-    sf::Http http("http://ekstrabladet.dk/");
+    if (this->m_imagePath.isEmpty()) {
+#ifdef __DEBUG__
+        std::cerr << "The RssItemLargePanel m_imagePath == 0" << std::endl;
+#endif
+        return false;
+    }
+
+    sf::Http http(this->m_host);
 
     sf::Http::Request request;
 
@@ -175,15 +192,17 @@ bool EBdkImage::PrepareImage() {
     sf::Http::Response response = http.sendRequest(request);
 
 #ifdef __DEBUG__
-    std::cout << "Got " << response.getStatus() << ", From ekstrabladet.dk,"
-            << " on " << std::string(this->m_imagePath) << std::endl;
+    std::cout << "Image: " << response.getStatus() << ", from "
+            << this->m_host.toAnsiString() << " on "
+            << this->m_imagePath.toAnsiString() << "." << std::endl;
 #endif
 
     if (response.getStatus() == sf::Http::Response::Ok) {
 
         void * ptrResponse = (void*) response.getBody().c_str();
 
-        std::cout << response.getField("Content-Length") << std::endl;
+        std::cout << "Response length: " << response.getField("Content-Length")
+                << std::endl;
 
         ssize_t sSize = std::stoi(response.getField("Content-Length"));
 
@@ -204,11 +223,11 @@ bool EBdkImage::PrepareImage() {
     return false;
 }
 
-EBdkImage::~EBdkImage() {
+RssItemLargePanel::~RssItemLargePanel() {
     //
 }
 
-void EBdkImage::Update() {
+void RssItemLargePanel::Update() {
     // this->m_texture.getSize().y * this->m_sprite.getScale().y   = Scaled Image Full Height.
     // this->m_dimensions.y - (this->m_texture.getSize().y * this->m_sprite.getScale().y)
     this->m_slideY += this->m_slideDelta;
@@ -227,7 +246,8 @@ void EBdkImage::Update() {
 
 }
 
-void EBdkImage::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void RssItemLargePanel::draw(sf::RenderTarget& target,
+        sf::RenderStates states) const {
     target.draw(this->m_sprite, states);
     target.draw(this->m_rectangle, 4, sf::Quads);
     target.draw(this->m_headline, states);

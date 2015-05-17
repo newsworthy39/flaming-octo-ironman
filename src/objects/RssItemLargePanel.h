@@ -5,8 +5,8 @@
  *      Author: gandalf
  */
 
-#ifndef OBJECTS_EBDKIMAGE_H_
-#define OBJECTS_EBDKIMAGE_H_
+#ifndef OBJECTS_RSSITEMLARGEPANEL_H_
+#define OBJECTS_RSSITEMLARGEPANEL_H_
 
 #include <iostream>
 #include <string>
@@ -17,19 +17,22 @@
 
 namespace objects {
 
-class EBdkImage: public sf::Drawable, public sf::Transformable {
+class RssItemLargePanel: public sf::Drawable, public sf::Transformable {
 public:
-    EBdkImage();
-    virtual ~EBdkImage();
+    RssItemLargePanel();
+    virtual ~RssItemLargePanel();
 
-    // objects::EBdkImage
+    // objects::RssItemLargePanel
     void Update();
 
-    void resizeObject(sf::Vector2f resizeTo);
+    void Refresh();
+
+    void SetHost(sf::String host);
     void SetTeaser(sf::String teaser);
     void SetHeadline(sf::String headline);
     void SetByline(sf::String byline);
     void SetImagePath(sf::String imagePath);
+    void SetDimensions(sf::Vector2f dimensions);
 
 
     // sf::Drawable
@@ -37,13 +40,14 @@ public:
 
 private:
 
-    bool PrepareImage();
+    bool downloadImages();
 
     sf::Font            m_font_h1;
     sf::Font            m_font_h2;
     sf::Font            m_font_byline;
 
     sf::String          m_imagePath;
+    sf::String          m_host;
     sf::Vector2f        m_dimensions;
     sf::Texture         m_texture;
     sf::Sprite          m_sprite;
@@ -62,4 +66,4 @@ private:
 
 } /* namespace objects */
 
-#endif /* OBJECTS_EBDKIMAGE_H_ */
+#endif /* OBJECTS_RSSITEMLARGEPANEL_H_ */

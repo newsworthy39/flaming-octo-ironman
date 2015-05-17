@@ -9,14 +9,16 @@
 
 namespace scenes {
 
-Dashboard::Dashboard(sf::Vector2f coords) {
-    this->setPosition(coords);
+Dashboard::Dashboard() {
+
 }
 
 void Dashboard::SetDimensions(sf::Vector2f dimensions) {
     this->m_dimensions = dimensions;
-    this->m_messageBar.setPosition(sf::Vector2f(this->getPosition().x, this->m_dimensions.y - 60));
-    this->m_animatedRectangle.setPosition(sf::Vector2f(this->getPosition().x, this->getPosition().y));
+    this->m_messageBar.setPosition(
+            sf::Vector2f(this->getPosition().x, this->m_dimensions.y - 60));
+    this->m_animatedRectangle.setPosition(
+            sf::Vector2f(this->getPosition().x, this->getPosition().y));
 }
 
 Dashboard::~Dashboard() {
@@ -25,7 +27,7 @@ Dashboard::~Dashboard() {
 
 void Dashboard::Refresh() {
 
-    sf::Http http("http://ubuntu64bit-msgstack00.lan", 9000);
+    sf::Http http("http://ubuntu64bit-msgstack00.lan", 10000);
 
     sf::Http::Request request;
 
@@ -41,17 +43,28 @@ void Dashboard::Refresh() {
 
     if (response.getStatus() == sf::Http::Response::Ok) {
 
+        // foreach, that shit.
         std::string err;
-        std::string test = response.getBody();
-        auto json = json11::Json::parse(test, err);
-        this->m_ebdkimage.SetImagePath(json["imagepath"].string_value());
-        this->m_ebdkimage.SetHeadline(json["headline"].string_value());
-        this->m_ebdkimage.SetTeaser(json["teaser"].string_value());
-        this->m_ebdkimage.SetByline(json["byline"].string_value());
+        auto json = json11::Json::parse(response.getBody(), err);
+
+#ifdef __DEBUG__
+        std::cout << err << ", " << json.dump()<< std::endl;
+#endif
+
+        objects::RssItemLargePanel * p = new objects::RssItemLargePanel();
+        p->SetDimensions(this->m_dimensions);
+        p->SetHost(json["host"].string_value());
+        p->SetImagePath(json["imagepath"].string_value());
+        p->SetHeadline(json["headline"].string_value());
+        p->SetTeaser(json["teaser"].string_value());
+        p->SetByline(json["byline"].string_value());
+
+        p->Refresh();
+
+        this->m_RssMembers.push_back(p);
 
     }
 
-    this->m_ebdkimage.resizeObject(this->m_dimensions);
 }
 
 /**
@@ -66,6 +79,7 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
     }
         ;
         break;
+
     case event::Event::MESSAGE: {
         std::string stringValue = data["message"].string_value();
         if (0 == stringValue.compare("update")) {
@@ -87,7 +101,10 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
 
 void Dashboard::Update() {
 
-    this->m_ebdkimage.Update();
+    // this->m_ebdkimage.Update();
+    for (objects::RssItemLargePanel * p : this->m_RssMembers) {
+        p->Update();
+    }
 
     this->m_messageBar.Update();
 
@@ -95,7 +112,11 @@ void Dashboard::Update() {
 }
 
 void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(this->m_ebdkimage, states);
+    //target.draw(this->m_ebdkimage, states);
+
+    for (const objects::RssItemLargePanel * p : this->m_RssMembers) {
+        target.draw(*p, states);
+    }
 
     target.draw(this->m_messageBar, states);
     target.draw(this->m_animatedRectangle, states);

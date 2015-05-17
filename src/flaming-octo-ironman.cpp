@@ -46,7 +46,8 @@ int main() {
 	events::JSONThreadedPoller poller("http://ubuntu64bit-msgstack00.lan", 9999);
 
 	// Objects used, here-in.
-	scenes::Dashboard dashboard(sf::Vector2f(20,20));
+	scenes::Dashboard dashboard;
+	dashboard.setPosition(sf::Vector2f(20,20));
 	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
 	dashboard.Refresh();
 
