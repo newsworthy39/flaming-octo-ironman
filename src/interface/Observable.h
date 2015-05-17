@@ -3,7 +3,7 @@
 #define __DELEGATE_H_
 
 #include <event/Event.h>
-#include <json11/json11.hpp>
+#include <json12/json11.hpp>
 
 namespace interface{
 
