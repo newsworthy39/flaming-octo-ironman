@@ -26,7 +26,7 @@ Dashboard::~Dashboard() {
 	// TODO: Unregister stuff here.
 }
 
-void Dashboard::Refresh() {
+void Dashboard::AsyncRefresh() {
 
 	this->m_LargePanelImages.clear();
 
@@ -61,7 +61,7 @@ void Dashboard::Refresh() {
 		p->SetTeaser(json["teaser"].string_value());
 		p->SetByline(json["byline"].string_value());
 
-		p->Refresh();
+		p->AsyncRefresh();
 
 		this->m_LargePanelImages.push_back(p);
 
@@ -94,13 +94,12 @@ void Dashboard::Refresh() {
 		p->SetTeaser(json["teaser"].string_value());
 		p->SetByline(json["byline"].string_value());
 
-		p->Refresh();
+		p->AsyncRefresh();
 
 
 		this->m_LargePanelImages.push_back(p);
 
 	}
-
 }
 
 /**
@@ -122,13 +121,13 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
 #ifdef __DEBUG__
 			std::cout << "I was asked to do a full update" << std::endl;
 #endif
-			this->Refresh();
+			this->AsyncRefresh();
 		}
 	}
 		;
 		break;
 	case event::Event::UPDATE: {
-		this->Refresh();
+		this->AsyncRefresh();
 	}
 
 		break;

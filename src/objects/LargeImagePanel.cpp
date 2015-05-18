@@ -112,7 +112,7 @@ void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
 	this->m_dimensions = dimensions;
 }
 
-void LargeImagePanel::Refresh() {
+void LargeImagePanel::AsyncRefresh() {
 
 	this->downloadImages();
 

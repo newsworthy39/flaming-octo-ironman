@@ -25,7 +25,7 @@ public:
     // objects::RssItemLargePanel
     void Update();
 
-    void Refresh();
+    void AsyncRefresh();
 
 
     void SetTeaser(sf::String teaser);

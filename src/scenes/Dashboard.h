@@ -31,7 +31,7 @@ public:
     Dashboard();
     virtual ~Dashboard();
     void Update();
-    void Refresh();
+    void AsyncRefresh();
     void SetDimensions(sf::Vector2f dimensions);
 
     // Passing solution

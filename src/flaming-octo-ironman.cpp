@@ -50,7 +50,7 @@ int main() {
 	scenes::Dashboard dashboard;
 	dashboard.setPosition(sf::Vector2f(20,20));
 	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
-	dashboard.Refresh();
+	dashboard.AsyncRefresh();
 
 	// Add callback, to objects, to receive events.
 	poller.AddObserver(dashboard);
@@ -71,7 +71,7 @@ int main() {
 
 			// Fake, an overall event. (synchron)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-			    dashboard.Refresh();
+			    dashboard.AsyncRefresh();
 			}
 
 			if (event.type == sf::Event::Resized) {
