@@ -150,7 +150,7 @@ void Dashboard::UpdateGraphics() {
     this->m_clock.setPosition(
             this->m_dimensions.x
                     - ((this->m_clock.getCharacterSize() / 2.0)
-                            * this->m_clock.getString().getSize() + 20), 20);
+                            * this->m_clock.getString().getSize() + 40), 0);
 
     /*
      * So we're going to cheet. If the last restart is large than

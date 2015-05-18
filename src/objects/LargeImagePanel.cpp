@@ -166,8 +166,8 @@ void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
     this->m_byline.setPosition(
             this->m_dimensions.x
                     - ((this->m_byline.getCharacterSize() / 2.0f)
-                            * this->m_byline.getString().getSize()),
-            this->m_dimensions.y - 40);
+                            * this->m_byline.getString().getSize() + 20),
+            this->m_dimensions.y - 60);
 
 }
 
