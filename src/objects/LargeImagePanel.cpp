@@ -147,8 +147,8 @@ void LargeImagePanel::Refresh() {
 
 	this->m_byline.setPosition(
 			this->m_dimensions.x
-					- ((this->m_byline.getCharacterSize() / 1.5)
-							* this->m_byline.getString().getSize()),
+					- ((this->m_byline.getCharacterSize() / 2.0)
+							* this->m_byline.getString().getSize() + 20),
 			this->m_dimensions.y - 40);
 
 	/**
