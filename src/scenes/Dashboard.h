@@ -44,7 +44,7 @@ private:
     objects::Progressbar m_messageBar;
     std::vector<objects::LargeImagePanel*> m_LargePanelImages;
     sf::Vector2f m_dimensions;
-    int m_panelDisplayCounter;
+    unsigned int m_panelDisplayCounter;
     sf::Clock m_wallclock;
 
 };
