@@ -43,9 +43,7 @@ void Dashboard::Refresh() {
 
     if (response.getStatus() == sf::Http::Response::Ok) {
 
-        this->m_RssMembers.clear();
-
-        // foreach, that shit.
+      // foreach, that shit.
         std::string err;
         auto json = json11::Json::parse(response.getBody(), err);
 
@@ -62,6 +60,7 @@ void Dashboard::Refresh() {
 
         p->Refresh();
 
+        this->m_RssMembers.clear();
         this->m_RssMembers.push_back(p);
     }
 }
