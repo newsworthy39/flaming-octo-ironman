@@ -19,11 +19,12 @@
 #include <scenes/Dashboard.h>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+
 #include <X11/Xlib.h>
 
 // FIXME: Screen width and height, should not de a static compile.
-#define SCREEN_W 1280
-#define SCREEN_H 720
+#define SCREEN_W 1600
+#define SCREEN_H 900
 
 int main() {
 
