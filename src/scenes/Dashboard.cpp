@@ -12,9 +12,9 @@ namespace scenes {
 /**
  * Dashboard constructor.
  */
-Dashboard::Dashboard() {
+Dashboard::Dashboard() : m_LargePanelImages(0) {
     this->m_panelDisplayCounter = 0;
-    this->m_LargePanelImages.resize(10);
+
 
     // FIXME: Fonts are loaded from an absolute location.
     this->m_font_h1.loadFromFile(
@@ -25,6 +25,25 @@ Dashboard::Dashboard() {
     this->m_clock.setCharacterSize(120);
 
     updateClock();
+}
+
+void Dashboard::AddPanel(objects::LargeImagePanel* p) {
+    unsigned int maxPanels = 10;
+
+    this->m_LargePanelImages.insert(this->m_LargePanelImages.begin(), p);
+
+    if (this->m_LargePanelImages.size() >= maxPanels) {
+
+#ifdef __DEBUG__
+        std::cout << "Destroyed first element, size is: " << this->m_LargePanelImages.size() << std::endl;
+#endif
+        const objects::LargeImagePanel * p1 = this->m_LargePanelImages.back();
+        this->m_LargePanelImages.pop_back();
+        delete p1; // LargeImagePanels
+
+        //delete p1;
+
+    }
 }
 
 void Dashboard::updateClock() {
@@ -52,9 +71,7 @@ Dashboard::~Dashboard() {
     // TODO: Unregister stuff here.
 }
 
-void Dashboard::AsyncRefresh() {
-
-    this->m_LargePanelImages.clear();
+void Dashboard::UpdateDataAsync() {
 
     sf::Http http("http://192.168.1.67", 9001);
 
@@ -87,42 +104,9 @@ void Dashboard::AsyncRefresh() {
         p->SetByline(json["byline"].string_value());
         p->SetDimensions(this->m_dimensions);
 
-        p->AsyncRefresh();
+        p->UpdateDataAsync();
 
-        this->m_LargePanelImages.push_back(p);
-
-    }
-
-    request.setMethod(sf::Http::Request::Method::Get);
-
-    request.setUri("/view/dashboard-1?type=raw");
-
-    request.setHttpVersion(1, 1); // HTTP 1.0
-
-    request.setField("Connection", "Close");
-
-    sf::Http::Response response1 = http.sendRequest(request);
-
-    if (response1.getStatus() == sf::Http::Response::Ok) {
-
-        // foreach, that shit.
-        std::string err;
-        auto json = json11::Json::parse(response1.getBody(), err);
-
-#ifdef __DEBUG__
-        std::cout << err << ", " << json.dump() << std::endl;
-#endif
-
-        objects::LargeImagePanel * p = new objects::LargeImagePanel();
-        p->SetDimensions(this->m_dimensions);
-        p->SetMediaPath(json["mediapath"].string_value());
-        p->SetHeadline(json["headline"].string_value());
-        p->SetTeaser(json["teaser"].string_value());
-        p->SetByline(json["byline"].string_value());
-
-        p->AsyncRefresh();
-
-        this->m_LargePanelImages.push_back(p);
+        this->AddPanel(p);
 
     }
 }
@@ -146,20 +130,20 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
 #ifdef __DEBUG__
             std::cout << "I was asked to do a full update" << std::endl;
 #endif
-            this->AsyncRefresh();
+            this->UpdateDataAsync();
         }
     }
         ;
         break;
     case event::Event::UPDATE: {
-        this->AsyncRefresh();
+        this->UpdateDataAsync();
     }
 
         break;
     }
 }
 
-void Dashboard::Update() {
+void Dashboard::UpdateGraphics() {
 
     this->updateClock();
 
@@ -184,23 +168,24 @@ void Dashboard::Update() {
     }
 
     for (objects::LargeImagePanel * p : this->m_LargePanelImages) {
-        p->Update();
+        p->UpdateGraphics();
     }
 
-    this->m_messageBar.Update();
-    this->m_animatedRectangle.Update();
+    this->m_messageBar.UpdateGraphics();
+
 
 }
 
 void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     const objects::LargeImagePanel * p =
-            this->m_LargePanelImages[this->m_panelDisplayCounter];
+            this->m_LargePanelImages.at(this->m_panelDisplayCounter);
+
     if (p != NULL)
         target.draw(*p, states);
 
     target.draw(this->m_messageBar, states);
-    target.draw(this->m_animatedRectangle, states);
+
     target.draw(this->m_clock, states);
 }
 

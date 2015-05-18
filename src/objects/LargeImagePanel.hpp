@@ -22,17 +22,14 @@ public:
     LargeImagePanel();
     virtual ~LargeImagePanel();
 
-    // objects::RssItemLargePanel
-    void Update();
-
-    void AsyncRefresh();
-
+    void UpdateGraphics();
+    void UpdateDataAsync();
+    void SetDimensions(sf::Vector2f dimensions);
 
     void SetTeaser(sf::String teaser);
     void SetHeadline(sf::String headline);
     void SetByline(sf::String byline);
     void SetMediaPath(sf::String mediaPath);
-    void SetDimensions(sf::Vector2f dimensions);
 
     // sf::Drawable
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;

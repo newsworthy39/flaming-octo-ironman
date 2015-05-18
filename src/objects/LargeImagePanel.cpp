@@ -43,6 +43,29 @@ LargeImagePanel::LargeImagePanel() {
 
 }
 
+//// Move constructor.
+//LargeImagePanel::LargeImagePanel(LargeImagePanel&& other) {
+//    this->m_font_h1 = other.m_font_h1;
+//
+//    this->m_font_h2 = other.m_font_h2;
+//    this->m_font_byline = other.m_font_byline;
+//
+//    this->m_mediaPath = other.m_mediaPath;
+//    this->m_dimensions = other.m_dimensions;
+//    this->m_texture = other.m_texture;
+//    this->m_sprite = other.m_sprite;
+//    this->m_rectangle = other.m_rectangle;
+//
+//    this->m_headline = other.m_headline;
+//    this->m_teaser = other.m_teaser;
+//    this->m_byline = other.m_byline;
+//
+//    this->m_slideX = other.m_slideX;
+//    this->m_slideY = other.m_slideY;
+//    this->m_slideDelta = other.m_slideDelta;
+//}
+
+
 void LargeImagePanel::SetTeaser(sf::String t) {
 
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
@@ -148,7 +171,7 @@ void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
 
 }
 
-void LargeImagePanel::AsyncRefresh() {
+void LargeImagePanel::UpdateDataAsync() {
 
     this->downloadImages();
 
@@ -246,7 +269,7 @@ LargeImagePanel::~LargeImagePanel() {
     //
 }
 
-void LargeImagePanel::Update() {
+void LargeImagePanel::UpdateGraphics() {
     float noSlide =
             std::abs(
                     this->m_dimensions.y

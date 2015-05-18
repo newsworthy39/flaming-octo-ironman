@@ -31,11 +31,15 @@ public:
 
     Dashboard();
     virtual ~Dashboard();
-    void Update();
-    void AsyncRefresh();
+
+    // Necessary, components.
+    void UpdateGraphics();
+    void UpdateDataAsync();
     void SetDimensions(sf::Vector2f dimensions);
 
-    // Passing solution
+    void AddPanel(objects::LargeImagePanel* p);
+
+    // Passing solution, from interface::Observable
     void ReceiveMessage(const event::Event&, json11::Json & data);
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

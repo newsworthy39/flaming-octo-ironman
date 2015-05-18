@@ -56,7 +56,7 @@ int main() {
     scenes::Dashboard dashboard;
     dashboard.setPosition(sf::Vector2f(20, 20));
     dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
-    dashboard.AsyncRefresh();
+    dashboard.UpdateDataAsync();
 
     // Add callback, to objects, to receive events.
     poller.AddObserver(dashboard);
@@ -77,7 +77,7 @@ int main() {
 
             // Fake, an overall event. (synchron)
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-                dashboard.AsyncRefresh();
+                dashboard.UpdateDataAsync();
             }
 
             if (event.type == sf::Event::Resized) {
@@ -90,7 +90,7 @@ int main() {
         }
 
         // FIXME: Integrate, this into a state-machine, accepting scene-objects.
-        dashboard.Update();
+        dashboard.UpdateGraphics();
 
         // We like our color-scheme.
         //window.clear(sf::Color(89, 217, 217));

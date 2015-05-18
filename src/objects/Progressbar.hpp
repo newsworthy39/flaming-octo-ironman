@@ -21,7 +21,7 @@ class Progressbar: public sf::Drawable,
 public:
     Progressbar();
     virtual ~Progressbar();
-    void Update();
+    void UpdateGraphics();
     void draw(sf::RenderTarget& target,
             sf::RenderStates states) const ;
     void SetValue(int value);
