@@ -14,7 +14,7 @@
 #include <interface/Observable.h>
 #include <objects/AnimatedRectangle.hpp>
 #include <objects/Progressbar.hpp>
-#include <objects/RssItemLargePanel.hpp>
+#include <objects/LargeImagePanel.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Network.hpp>
@@ -41,7 +41,7 @@ private:
 
     objects::AnimatedRectangle m_animatedRectangle;
     objects::Progressbar m_messageBar;
-    std::vector<objects::RssItemLargePanel*> m_RssMembers;
+    std::vector<objects::LargeImagePanel*> m_RssMembers;
     sf::Vector2f m_dimensions;
 
 };

@@ -17,10 +17,10 @@
 
 namespace objects {
 
-class RssItemLargePanel: public sf::Drawable, public sf::Transformable {
+class LargeImagePanel: public sf::Drawable, public sf::Transformable {
 public:
-    RssItemLargePanel();
-    virtual ~RssItemLargePanel();
+    LargeImagePanel();
+    virtual ~LargeImagePanel();
 
     // objects::RssItemLargePanel
     void Update();

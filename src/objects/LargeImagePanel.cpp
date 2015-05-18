@@ -5,11 +5,11 @@
  *      Author: gandalf
  */
 
-#include <objects/RssItemLargePanel.hpp>
+#include <objects/LargeImagePanel.hpp>
 
 namespace objects {
 
-RssItemLargePanel::RssItemLargePanel() {
+LargeImagePanel::LargeImagePanel() {
 
 	this->m_mediaPath = "/favicon.ico";
 
@@ -40,7 +40,7 @@ RssItemLargePanel::RssItemLargePanel() {
 
 }
 
-void RssItemLargePanel::SetTeaser(sf::String t) {
+void LargeImagePanel::SetTeaser(sf::String t) {
 
 	// FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
 //    t.replace("ø", L"ø");
@@ -65,7 +65,7 @@ void RssItemLargePanel::SetTeaser(sf::String t) {
 	this->m_teaser.setString(t);
 }
 
-void RssItemLargePanel::SetHeadline(sf::String t) {
+void LargeImagePanel::SetHeadline(sf::String t) {
 
 	// FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
 
@@ -83,7 +83,7 @@ void RssItemLargePanel::SetHeadline(sf::String t) {
 	this->m_headline.setString(t);
 }
 
-void RssItemLargePanel::SetByline(sf::String t) {
+void LargeImagePanel::SetByline(sf::String t) {
 
 	// FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
 	t.replace("ø", L"ø");
@@ -101,29 +101,31 @@ void RssItemLargePanel::SetByline(sf::String t) {
 	this->m_byline.setString(t);
 }
 
-void RssItemLargePanel::SetMediaPath(sf::String imagePath) {
+void LargeImagePanel::SetMediaPath(sf::String imagePath) {
 	this->m_mediaPath = imagePath;
 }
 
-void RssItemLargePanel::SetDimensions(sf::Vector2f dimensions) {
+void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
 	this->m_dimensions = dimensions;
 }
 
-void RssItemLargePanel::Refresh() {
+void LargeImagePanel::Refresh() {
 
 	this->downloadImages();
 
-	this->m_rectangle[0] = sf::Vertex(sf::Vector2f(0, 200),
+	this->m_rectangle[0] = sf::Vertex(
+			sf::Vector2f(0, this->m_dimensions.y / 2 - 200),
 			sf::Color(0, 0, 0, 0));
 
 	this->m_rectangle[1] = sf::Vertex(sf::Vector2f(0, this->m_dimensions.y),
-			sf::Color(0, 0, 0, 240));
+			sf::Color(0, 0, 0, 255));
 
 	this->m_rectangle[2] = sf::Vertex(
 			sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y),
-			sf::Color(0, 0, 0, 240));
+			sf::Color(0, 0, 0, 255));
 
-	this->m_rectangle[3] = sf::Vertex(sf::Vector2f(this->m_dimensions.x, 200),
+	this->m_rectangle[3] = sf::Vertex(
+			sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y / 2 - 200),
 			sf::Color(0, 0, 0, 0));
 
 	this->m_headline.setCharacterSize(this->m_dimensions.y / 32);
@@ -171,7 +173,7 @@ void RssItemLargePanel::Refresh() {
 	this->m_sprite.setScale(sf::Vector2f(scale, scale));
 }
 
-bool RssItemLargePanel::downloadImages() {
+bool LargeImagePanel::downloadImages() {
 
 	if (this->m_mediaPath.isEmpty()) {
 #ifdef __DEBUG__
@@ -234,11 +236,11 @@ bool RssItemLargePanel::downloadImages() {
 	return false;
 }
 
-RssItemLargePanel::~RssItemLargePanel() {
+LargeImagePanel::~LargeImagePanel() {
 	//
 }
 
-void RssItemLargePanel::Update() {
+void LargeImagePanel::Update() {
 	float noSlide =
 			std::abs(
 					this->m_dimensions.y
@@ -262,7 +264,7 @@ void RssItemLargePanel::Update() {
 
 }
 
-void RssItemLargePanel::draw(sf::RenderTarget& target,
+void LargeImagePanel::draw(sf::RenderTarget& target,
 		sf::RenderStates states) const {
 	target.draw(this->m_sprite, states);
 	target.draw(this->m_rectangle, 4, sf::Quads);

@@ -51,7 +51,7 @@ void Dashboard::Refresh() {
         std::cout << err << ", " << json.dump()<< std::endl;
 #endif
 
-        objects::RssItemLargePanel * p = new objects::RssItemLargePanel();
+        objects::LargeImagePanel * p = new objects::LargeImagePanel();
         p->SetDimensions(this->m_dimensions);
         p->SetMediaPath(json["mediapath"].string_value());
         p->SetHeadline(json["headline"].string_value());
@@ -100,7 +100,7 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
 void Dashboard::Update() {
 
     // this->m_ebdkimage.Update();
-    for (objects::RssItemLargePanel * p : this->m_RssMembers) {
+    for (objects::LargeImagePanel * p : this->m_RssMembers) {
         p->Update();
     }
 
@@ -112,7 +112,7 @@ void Dashboard::Update() {
 void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     //target.draw(this->m_ebdkimage, states);
 
-    for (const objects::RssItemLargePanel * p : this->m_RssMembers) {
+    for (const objects::LargeImagePanel * p : this->m_RssMembers) {
         target.draw(*p, states);
     }
 
