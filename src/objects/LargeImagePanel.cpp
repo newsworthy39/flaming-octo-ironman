@@ -160,12 +160,10 @@ void LargeImagePanel::AsyncRefresh() {
 
     float scale = std::max(sx, sy);
 
-
 #ifdef __DEBUG__
 
     float scaleW = sx * scale;
     float scaleH = sy * scale;
-
 
     std::cout << "Display properties: " << this->m_dimensions.x << "x"
             << this->m_dimensions.y << std::endl;
@@ -190,11 +188,11 @@ bool LargeImagePanel::downloadImages() {
         return false;
     }
 
-    ssize_t t1 = this->m_mediaPath.find("http://", 0);
-    ssize_t t2 = this->m_mediaPath.find("/", t1 + 7);
-    sf::String host = this->m_mediaPath.substring(t1 + 7, t2 - (t1 + 7));
-    sf::String path = this->m_mediaPath.substring(t2,
-            this->m_mediaPath.getSize() - t2);
+    std::string bckcompatible = this->m_mediaPath;
+    ssize_t t1 = bckcompatible.find("http://", 0);
+    ssize_t t2 = bckcompatible.find("/", t1 + 7);
+    sf::String host = bckcompatible.substr(t1 + 7, t2 - (t1 + 7));
+    sf::String path = bckcompatible.substr(t2, bckcompatible.length() - t2);
 
     sf::Http http(host);
 
