@@ -121,7 +121,7 @@
 									<listOptionValue builtIn="false" value="sfml-system"/>
 									<listOptionValue builtIn="false" value="sfml-graphics"/>
 								</option>
-								<option id="gnu.cpp.link.option.paths.155376768" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths"/>
+								<option id="gnu.cpp.link.option.paths.155376768" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2074045181" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
