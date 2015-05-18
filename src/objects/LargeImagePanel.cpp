@@ -160,10 +160,13 @@ void LargeImagePanel::AsyncRefresh() {
 
     float scale = std::max(sx, sy);
 
+
+#ifdef __DEBUG__
+
     float scaleW = sx * scale;
     float scaleH = sy * scale;
 
-#ifdef __DEBUG__
+
     std::cout << "Display properties: " << this->m_dimensions.x << "x"
             << this->m_dimensions.y << std::endl;
     std::cout << "Image properties: " << this->m_texture.getSize().x << "x"
