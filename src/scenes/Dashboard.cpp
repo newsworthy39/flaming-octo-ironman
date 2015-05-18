@@ -28,6 +28,7 @@ Dashboard::~Dashboard() {
 
 void Dashboard::AsyncRefresh() {
 
+
 	this->m_LargePanelImages.clear();
 
 	sf::Http http("http://localhost", 9001);
@@ -166,7 +167,8 @@ void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	//for (const objects::LargeImagePanel * p : this->m_LargePanelImages) {
 	const objects::LargeImagePanel * p =
 			this->m_LargePanelImages[this->m_panelDisplayCounter];
-	target.draw(*p, states);
+	if (p != NULL)
+	    target.draw(*p, states);
 	//}
 
 	target.draw(this->m_messageBar, states);
