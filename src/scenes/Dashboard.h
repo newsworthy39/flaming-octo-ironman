@@ -39,13 +39,15 @@ public:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
+    unsigned int m_panelDisplayCounter;
+    std::vector<objects::LargeImagePanel*> m_LargePanelImages;
 
     objects::AnimatedRectangle m_animatedRectangle;
     objects::Progressbar m_messageBar;
-    std::vector<objects::LargeImagePanel*> m_LargePanelImages;
     sf::Vector2f m_dimensions;
-    unsigned int m_panelDisplayCounter;
     sf::Clock m_wallclock;
+    sf::Font m_font_h1;
+    sf::Text m_clock;
 
 };
 

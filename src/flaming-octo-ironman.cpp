@@ -28,77 +28,82 @@
 
 int main() {
 
-	// initialize X11
-	if (0 == XInitThreads()) {
-		std::cerr << "Threads are not supported, on this platform, aborting."
-				<< std::endl;
-		exit(-1);
-	}
+    // initialize X11
+    if (0 == XInitThreads()) {
+        std::cerr << "Threads are not supported, on this platform, aborting."
+                << std::endl;
+        exit(-1);
+    }
 
-	sf::ContextSettings context;
-	context.antialiasingLevel = 4;
+    bool dFullscreen = false;
 
-	sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H), "Flaming-octo-ironman",
-			sf::Style::Close, context);
+    sf::ContextSettings context;
+    context.antialiasingLevel = 4;
 
-	window.setFramerateLimit(60);
+    sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H),
+            "Flaming-octo-ironman",
+            dFullscreen ? sf::Style::Fullscreen : sf::Style::Close
+                    , context);
 
-	// Jsonthreaded poller
-	events::JSONThreadedPoller poller("http://localhost", 9000);
+    window.setMouseCursorVisible(!dFullscreen);
+    window.setFramerateLimit(60);
 
-	// Objects used, here-in.
-	scenes::Dashboard dashboard;
-	dashboard.setPosition(sf::Vector2f(20,20));
-	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
-	dashboard.AsyncRefresh();
+    // Jsonthreaded poller
+    events::JSONThreadedPoller poller("http://192.168.1.67", 9000);
 
-	// Add callback, to objects, to receive events.
-	poller.AddObserver(dashboard);
+    // Objects used, here-in.
+    scenes::Dashboard dashboard;
+    dashboard.setPosition(sf::Vector2f(20, 20));
+    dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
+    dashboard.AsyncRefresh();
 
-	// Start json-poller.
-	poller.Start();
+    // Add callback, to objects, to receive events.
+    poller.AddObserver(dashboard);
 
-	// Begin rendering-loop.
-	while (window.isOpen()) {
+    // Start json-poller.
+    poller.Start();
 
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed
-					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-				window.close();
-				poller.Stop();
-			}
+    // Begin rendering-loop.
+    while (window.isOpen()) {
 
-			// Fake, an overall event. (synchron)
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-			    dashboard.AsyncRefresh();
-			}
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                window.close();
+                poller.Stop();
+            }
 
-			if (event.type == sf::Event::Resized) {
+            // Fake, an overall event. (synchron)
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
+                dashboard.AsyncRefresh();
+            }
+
+            if (event.type == sf::Event::Resized) {
 #ifdef __DEBUG__
-			    std::cout << "The window was resized" << std::endl;
+                std::cout << "The window was resized" << std::endl;
 #endif
-			    dashboard.SetDimensions((sf::Vector2f)window.getSize());
-			    //dashboard.Refresh();
-			}
-		}
+                dashboard.SetDimensions((sf::Vector2f) window.getSize());
+                //dashboard.Refresh();
+            }
+        }
 
-		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
-		dashboard.Update();
+        // FIXME: Integrate, this into a state-machine, accepting scene-objects.
+        dashboard.Update();
 
-		// We like our color-scheme.
-		//window.clear(sf::Color(89, 217, 217));
-		window.clear(sf::Color(0,0,0));
+        // We like our color-scheme.
+        //window.clear(sf::Color(89, 217, 217));
+        window.clear(sf::Color(0, 0, 0));
 
-		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
-		window.draw(dashboard);
+        // FIXME: Integrate, this into a state-machine, accepting scene-objects.
+        window.draw(dashboard);
 
-		// Show display.
-		window.display();
-	}
+        // Show display.
+        window.display();
+    }
 
-	// make entirely sure.
-	poller.Stop();
+    // make entirely sure.
+    poller.Stop();
 
-	return 0;
+    return 0;
 }
