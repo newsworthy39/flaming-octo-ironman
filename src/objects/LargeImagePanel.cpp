@@ -21,12 +21,15 @@ LargeImagePanel::LargeImagePanel() {
 
 	this->m_slideDelta = 0.2f;
 
+	// FIXME: Fonts are loaded from an absolute location.
 	this->m_font_h1.loadFromFile(
 			"/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Regular.ttf");
 
+	// FIXME: Fonts are loaded from an absolute location.
 	this->m_font_h2.loadFromFile(
 			"/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-LightItalic.ttf");
 
+	// FIXME: Fonts are loaded from an absolute location.
 	this->m_font_byline.loadFromFile(
 			"/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
 
@@ -114,7 +117,7 @@ void LargeImagePanel::Refresh() {
 	this->downloadImages();
 
 	this->m_rectangle[0] = sf::Vertex(
-			sf::Vector2f(0, this->m_dimensions.y / 2 - 200),
+			sf::Vector2f(0, this->m_dimensions.y - 200),
 			sf::Color(0, 0, 0, 0));
 
 	this->m_rectangle[1] = sf::Vertex(sf::Vector2f(0, this->m_dimensions.y),
@@ -125,7 +128,7 @@ void LargeImagePanel::Refresh() {
 			sf::Color(0, 0, 0, 255));
 
 	this->m_rectangle[3] = sf::Vertex(
-			sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y / 2 - 200),
+			sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y - 200),
 			sf::Color(0, 0, 0, 0));
 
 	this->m_headline.setCharacterSize(this->m_dimensions.y / 32);
@@ -144,7 +147,7 @@ void LargeImagePanel::Refresh() {
 
 	this->m_byline.setPosition(
 			this->m_dimensions.x
-					- ((this->m_byline.getCharacterSize() / 2)
+					- ((this->m_byline.getCharacterSize() / 1.5)
 							* this->m_byline.getString().getSize()),
 			this->m_dimensions.y - 40);
 
