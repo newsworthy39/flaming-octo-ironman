@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include <json11/json11.hpp>
 #include <interface/Observable.h>
 #include <objects/AnimatedRectangle.hpp>
@@ -39,6 +40,7 @@ public:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
+    void updateClock();
     unsigned int m_panelDisplayCounter;
     std::vector<objects::LargeImagePanel*> m_LargePanelImages;
 

@@ -21,17 +21,31 @@ Dashboard::Dashboard() {
             "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Regular.ttf");
 
     this->m_clock.setFont(this->m_font_h1);
-    this->m_clock.setColor(sf::Color(200, 255, 255, 200));
-    this->m_clock.setCharacterSize(40);
-    this->m_clock.setString("");
+    this->m_clock.setColor(sf::Color(0, 255, 255, 240));
+    this->m_clock.setCharacterSize(120);
+
+    updateClock();
+}
+
+void Dashboard::updateClock() {
+    std::locale::global(std::locale("en_US.utf8"));
+    std::time_t t = std::time(NULL);
+    char mbstr[100];
+    std::strftime(mbstr, sizeof(mbstr), "%H:%M", std::localtime(&t));
+
+    this->m_clock.setString(mbstr);
 }
 
 void Dashboard::SetDimensions(sf::Vector2f dimensions) {
+
     this->m_dimensions = dimensions;
+
     this->m_messageBar.setPosition(
             sf::Vector2f(this->getPosition().x, this->m_dimensions.y - 60));
+
     this->m_animatedRectangle.setPosition(
             sf::Vector2f(this->getPosition().x, this->getPosition().y));
+
 }
 
 Dashboard::~Dashboard() {
@@ -67,11 +81,11 @@ void Dashboard::AsyncRefresh() {
 #endif
 
         objects::LargeImagePanel * p = new objects::LargeImagePanel();
-        p->SetDimensions(this->m_dimensions);
         p->SetMediaPath(json["mediapath"].string_value());
         p->SetHeadline(json["headline"].string_value());
         p->SetTeaser(json["teaser"].string_value());
         p->SetByline(json["byline"].string_value());
+        p->SetDimensions(this->m_dimensions);
 
         p->AsyncRefresh();
 
@@ -147,7 +161,12 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
 
 void Dashboard::Update() {
 
-    // this->m_ebdkimage.Update();
+    this->updateClock();
+
+    this->m_clock.setPosition(
+            this->m_dimensions.x
+                    - ((this->m_clock.getCharacterSize() / 2.0)
+                            * this->m_clock.getString().getSize() + 20), 20);
 
     /*
      * So we're going to cheet. If the last restart is large than
@@ -170,11 +189,6 @@ void Dashboard::Update() {
 
     this->m_messageBar.Update();
     this->m_animatedRectangle.Update();
-
-    this->m_clock.setPosition(
-            this->m_dimensions.x
-                    - ((this->m_clock.getCharacterSize() / 2.0)
-                            * this->m_clock.getString().getSize() + 20), 40);
 
 }
 

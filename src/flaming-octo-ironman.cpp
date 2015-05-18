@@ -15,6 +15,7 @@
 #include <thread>
 #include <functional>
 #include <random>
+#include <ctime>
 #include <event/JSONThreadedPoller.h>
 #include <scenes/Dashboard.h>
 #include <SFML/System.hpp>
