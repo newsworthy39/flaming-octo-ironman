@@ -34,7 +34,7 @@ public:
     virtual ~Dashboard();
 
     // Necessary, components.
-    void UpdateGraphics();
+    void UpdateGraphics(sf::FloatRect&);
     void UpdateDataAsync();
     void SetDimensions(sf::Vector2f dimensions);
 
@@ -46,15 +46,18 @@ public:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
     void updateClock();
+    float prevValue, newValue;
     unsigned int m_panelDisplayCounter;
     std::vector<interface::DrawablePanel*> m_LargePanelImages;
     //objects::AnimatedRectangle m_animatedRectangle;
     objects::Progressbar m_messageBar;
-
     sf::Vector2f m_dimensions;
     sf::Clock m_wallclock;
     sf::Font m_font_h1;
     sf::Text m_clock;
+
+
+
 
 };
 

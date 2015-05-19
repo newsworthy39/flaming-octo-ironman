@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
+
 namespace interface {
 
 class DrawablePanel: public sf::Drawable, public sf::Transformable {
@@ -12,11 +13,10 @@ public:
     virtual ~DrawablePanel() {
     }
     ;
-
-    virtual void UpdateGraphics() = 0;
+    virtual void UpdateGraphics(sf::FloatRect&) = 0;
     virtual void UpdateDataAsync() = 0;
-    virtual void SetDimensions(sf::Vector2f dimensions) = 0;
-
+    const virtual sf::Vector2f GetDimensions() = 0;
+    virtual void SetDimensions(sf::Vector2f) = 0;
 };
 
 }

@@ -8,28 +8,35 @@
 #ifndef OBJECTS_PROGRESSBAR_H_
 #define OBJECTS_PROGRESSBAR_H_
 
+#include <iostream>
+#include <interface/DrawablePanel.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <iostream>
+
 
 namespace objects {
 
-class Progressbar: public sf::Drawable,
-        public sf::Transformable {
+class Progressbar: public interface::DrawablePanel {
 public:
     Progressbar();
     virtual ~Progressbar();
-    void UpdateGraphics();
-    void draw(sf::RenderTarget& target,
-            sf::RenderStates states) const ;
+
+    // From DrawablePanel
+    void UpdateGraphics(sf::FloatRect&);
+    void UpdateDataAsync();
+    const sf::Vector2f GetDimensions();
+    void SetDimensions(sf::Vector2f);
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
     void SetValue(int value);
     int GetValue();
 private:
-    sf::RectangleShape messageLoader;
-    sf::Text tekst;
-    sf::Font font;
+    sf::RectangleShape m_messageLoader;
+    sf::Text m_tekst;
+    sf::Font m_font;
+    sf::Vector2f m_dimensions;
 };
 
 } /* namespace objects */

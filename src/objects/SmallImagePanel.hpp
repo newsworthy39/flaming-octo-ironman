@@ -23,17 +23,17 @@ public:
     SmallImagePanel();
     virtual ~SmallImagePanel();
 
-    void UpdateGraphics();
-    void UpdateDataAsync();
-    void SetDimensions(sf::Vector2f dimensions);
+    // From DrawablePanel
+     void UpdateGraphics(sf::FloatRect&);
+     void UpdateDataAsync();
+     const sf::Vector2f GetDimensions();
+     void SetDimensions(sf::Vector2f);
+     void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     void SetTeaser(sf::String teaser);
     void SetHeadline(sf::String headline);
     void SetByline(sf::String byline);
     void SetMediaPath(sf::String mediaPath);
-
-    // sf::Drawable
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
     bool downloadImages();

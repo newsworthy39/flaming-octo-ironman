@@ -13,8 +13,6 @@ LargeImagePanel::LargeImagePanel() {
 
     this->m_mediaPath = "/favicon.ico";
 
-    this->m_dimensions = sf::Vector2f(640, 480);
-
     this->m_slideX = 0.0f;
 
     this->m_slideY = 0.0f;
@@ -64,7 +62,6 @@ LargeImagePanel::LargeImagePanel() {
 //    this->m_slideY = other.m_slideY;
 //    this->m_slideDelta = other.m_slideDelta;
 //}
-
 
 void LargeImagePanel::SetTeaser(sf::String t) {
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
@@ -118,40 +115,16 @@ void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
 
     this->m_dimensions = dimensions;
 
-    this->m_rectangle[0] = sf::Vertex(
-            sf::Vector2f(0, this->m_dimensions.y - 200), sf::Color(0, 0, 0, 0));
-
-    this->m_rectangle[1] = sf::Vertex(sf::Vector2f(0, this->m_dimensions.y),
-            sf::Color(0, 0, 0, 255));
-
-    this->m_rectangle[2] = sf::Vertex(
-            sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y),
-            sf::Color(0, 0, 0, 255));
-
-    this->m_rectangle[3] = sf::Vertex(
-            sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y - 200),
-            sf::Color(0, 0, 0, 0));
-
     this->m_headline.setCharacterSize(this->m_dimensions.y / 32);
 
     this->m_teaser.setCharacterSize(this->m_dimensions.y / 34);
 
     this->m_byline.setCharacterSize(this->m_dimensions.y / 40);
 
-    /**
-     * Position the text, accordingly.
-     */
-    this->m_headline.setPosition(
-            sf::Vector2f(40, this->m_dimensions.y / 2 + 40));
+}
 
-    this->m_teaser.setPosition(sf::Vector2f(80, this->m_dimensions.y / 2 + 80));
-
-    this->m_byline.setPosition(
-            this->m_dimensions.x
-                    - ((this->m_byline.getCharacterSize() / 2.0f)
-                            * this->m_byline.getString().getSize() + 20),
-            this->m_dimensions.y - 60);
-
+const sf::Vector2f LargeImagePanel::GetDimensions() {
+    return this->m_dimensions;
 }
 
 void LargeImagePanel::UpdateDataAsync() {
@@ -252,17 +225,17 @@ LargeImagePanel::~LargeImagePanel() {
     //
 }
 
-void LargeImagePanel::UpdateGraphics() {
+void LargeImagePanel::UpdateGraphics(sf::FloatRect& view) {
     float noSlide =
             std::abs(
-                    this->m_dimensions.y
+                    view.height
                             - (this->m_texture.getSize().y
                                     * this->m_sprite.getScale().y));
     if (noSlide > 2.0f) {
         this->m_slideY += this->m_slideDelta;
         if (this->m_slideY
                 > std::abs(
-                        this->m_dimensions.y
+                        view.height
                                 - (this->m_texture.getSize().y
                                         * this->m_sprite.getScale().y))
                 || this->m_slideY < 0.0f) {
@@ -273,6 +246,43 @@ void LargeImagePanel::UpdateGraphics() {
 
     this->m_sprite.setPosition(
             this->getPosition() - sf::Vector2f(this->m_slideX, this->m_slideY));
+
+    // Setup gradient box # 1
+    this->m_rectangle[0] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x,
+                    this->getPosition().y + this->m_dimensions.y - 200),
+            sf::Color(0, 0, 0, 0));
+
+    this->m_rectangle[1] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x, this->m_dimensions.y),
+            sf::Color(0, 0, 0, 255));
+
+    this->m_rectangle[2] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x + this->m_dimensions.x,
+                    this->getPosition().y + this->m_dimensions.y),
+            sf::Color(0, 0, 0, 255));
+
+    this->m_rectangle[3] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x + this->m_dimensions.x,
+                    this->getPosition().y + this->m_dimensions.y - 200),
+            sf::Color(0, 0, 0, 0));
+
+    /**
+     * Position the text, accordingly.
+     */
+    this->m_headline.setPosition(
+            sf::Vector2f(this->getPosition().x + 40,
+                    this->getPosition().y + this->m_dimensions.y / 2 + 40));
+
+    this->m_teaser.setPosition(
+            sf::Vector2f(this->getPosition().x + 80,
+                    this->getPosition().y + this->m_dimensions.y / 2 + 80));
+
+    this->m_byline.setPosition(
+            this->getPosition().x + this->m_dimensions.x
+                    - ((this->m_byline.getCharacterSize() / 2.0f)
+                            * this->m_byline.getString().getSize() + 20),
+            this->getPosition().y + this->m_dimensions.y - 60);
 
 }
 

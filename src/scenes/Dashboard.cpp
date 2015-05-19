@@ -23,6 +23,8 @@ Dashboard::Dashboard() {
     this->m_clock.setColor(sf::Color(0, 255, 255, 240));
     this->m_clock.setCharacterSize(120);
 
+    this->prevValue = 0.f; this->newValue = 0.f;
+
     updateClock();
 }
 
@@ -42,7 +44,17 @@ void Dashboard::AddPanel(interface::DrawablePanel * p) {
         delete p1; // LargeImagePanels
 
         //delete p1;
+    }
 
+    // Next, push the rest to the side.
+    sf::Vector2f l_position(0.f, 0.f);
+    for (std::vector<interface::DrawablePanel*>::iterator p =
+            this->m_LargePanelImages.begin();
+            p != this->m_LargePanelImages.end(); ++p) {
+
+        (*p)->setPosition(l_position);
+
+        l_position.x += (*p)->GetDimensions().x;
     }
 }
 
@@ -59,11 +71,6 @@ void Dashboard::SetDimensions(sf::Vector2f dimensions) {
 
     this->m_dimensions = dimensions;
 
-    this->m_messageBar.setPosition(
-            sf::Vector2f(this->getPosition().x, this->m_dimensions.y - 60));
-
-    //this->m_animatedRectangle.setPosition(
-            //sf::Vector2f(this->getPosition().x, this->getPosition().y));
 }
 
 Dashboard::~Dashboard() {
@@ -178,48 +185,55 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
     }
 }
 
-void Dashboard::UpdateGraphics() {
+void Dashboard::UpdateGraphics(sf::FloatRect& view) {
 
     this->updateClock();
 
-    this->m_clock.setPosition(
-            this->m_dimensions.x
-                    - ((this->m_clock.getCharacterSize() / 2.0)
-                            * this->m_clock.getString().getSize() + 40), 0);
-
     /*
      * So we're going to cheet. If the last restart is large than
-     * 30 seconds, pick a new panel.
+     * 30 seconds, pick a new panel. (this simulates an animator.)
      */
-    if (this->m_wallclock.getElapsedTime() >= sf::seconds(10)) {
+    if (this->m_wallclock.getElapsedTime() >= sf::seconds(5)) {
         this->m_wallclock.restart();
+        this->prevValue = this->newValue;
+        this->newValue += view.width;
 
-        this->m_panelDisplayCounter = ++this->m_panelDisplayCounter
-                % this->m_LargePanelImages.size();
-
-        std::cout << "Wall clock change, changing panel [max]"
-                << this->m_LargePanelImages.size() << ", current "
-                << this->m_panelDisplayCounter << std::endl;
+        if (this->newValue >= ( this->m_LargePanelImages.size() * view.width) ) {
+            this->newValue = 0;
+        }
     }
+
+    float diffRadius = (this->prevValue - this->newValue) / 16;
+    view.left = this->prevValue + diffRadius;
+    this->prevValue -= diffRadius;
+
+    /**
+     * This is ALLWAYS the same position.
+     */
+    this->m_clock.setPosition(
+            view.left + view.width
+                    - ((this->m_clock.getCharacterSize() / 2.0)
+                            * this->m_clock.getString().getSize() + 40),
+            view.top);
+
+    this->m_messageBar.setPosition(sf::Vector2f(view.left, view.top - 60));
 
     for (interface::DrawablePanel * p : this->m_LargePanelImages) {
-        p->UpdateGraphics();
+        p->UpdateGraphics(view);
     }
 
-    this->m_messageBar.UpdateGraphics();
+    this->m_messageBar.UpdateGraphics(view);
 
 }
 
 void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
-    const interface::DrawablePanel * p = this->m_LargePanelImages.at(
-            this->m_panelDisplayCounter);
-
-    if (p != NULL)
-        target.draw(*p, states);
+    for (auto *p : this->m_LargePanelImages) {
+        if (p != NULL)
+            target.draw(*p, states);
+    }
 
     target.draw(this->m_messageBar, states);
-
     target.draw(this->m_clock, states);
 }
 

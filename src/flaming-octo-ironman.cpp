@@ -24,8 +24,15 @@
 #include <X11/Xlib.h>
 
 // FIXME: Screen width and height, should not de a static compile.
+#ifdef __DEBUG__
 #define SCREEN_W 1600
 #define SCREEN_H 900
+#define FULLSCREEN false
+#else
+#define SCREEN_W 1920
+#define SCREEN_H 1080
+#define FULLSCREEN true
+#endif
 
 int main() {
 
@@ -36,17 +43,14 @@ int main() {
         exit(-1);
     }
 
-    bool dFullscreen = false;
-
     sf::ContextSettings context;
     context.antialiasingLevel = 4;
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H),
             "Flaming-octo-ironman",
-            dFullscreen ? sf::Style::Fullscreen : sf::Style::Close
-                    , context);
+            FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Close, context);
 
-    window.setMouseCursorVisible(!dFullscreen);
+    window.setMouseCursorVisible(!FULLSCREEN);
     window.setFramerateLimit(60);
 
     // Jsonthreaded poller
@@ -63,6 +67,9 @@ int main() {
 
     // Start json-poller.
     poller.Start();
+
+    // update the view to the new size of the window
+    sf::FloatRect viewRect(0, 0, SCREEN_W, SCREEN_H);
 
     // Begin rendering-loop.
     while (window.isOpen()) {
@@ -85,18 +92,33 @@ int main() {
                 std::cout << "The window was resized" << std::endl;
 #endif
                 dashboard.SetDimensions((sf::Vector2f) window.getSize());
-                //dashboard.Refresh();
+
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                viewRect.left += 4.f;
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                viewRect.left -= 4.f;
             }
         }
 
         // FIXME: Integrate, this into a state-machine, accepting scene-objects.
-        dashboard.UpdateGraphics();
+        dashboard.UpdateGraphics(viewRect);
 
-        // We like our color-scheme.
+        // We like our color-scheme, but black is purrrrty.
         //window.clear(sf::Color(89, 217, 217));
         window.clear(sf::Color(0, 0, 0));
 
         // FIXME: Integrate, this into a state-machine, accepting scene-objects.
+        // let's define a view
+        sf::View view(viewRect);
+
+        // activate it
+        window.setView(view);
+
+        // Draw shit in it.
         window.draw(dashboard);
 
         // Show display.

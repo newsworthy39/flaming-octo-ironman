@@ -27,7 +27,7 @@ SmallImagePanel::SmallImagePanel() {
 
     // FIXME: Fonts are loaded from an absolute location.
     this->m_font_h2.loadFromFile(
-            "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Light.ttf");
+            "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Regular.ttf");
 
     // FIXME: Fonts are loaded from an absolute location.
     this->m_font_byline.loadFromFile(
@@ -41,6 +41,10 @@ SmallImagePanel::SmallImagePanel() {
     this->m_teaser.setColor(sf::Color(0, 255, 255, 240));
     this->m_byline.setColor(sf::Color(0, 255, 255, 240));
 
+}
+
+const sf::Vector2f SmallImagePanel::GetDimensions() {
+    return this->m_dimensions;
 }
 
 //// Move constructor.
@@ -118,58 +122,11 @@ void SmallImagePanel::SetDimensions(sf::Vector2f dimensions) {
 
     this->m_dimensions = dimensions;
 
-    this->m_rectangle[0] = sf::Vertex(sf::Vector2f(0, this->m_dimensions.y / 2),
-            sf::Color(0, 0, 0, 0));
-
-    this->m_rectangle[1] = sf::Vertex(sf::Vector2f(0, this->m_dimensions.y),
-            sf::Color(0, 0, 0, 255));
-
-    this->m_rectangle[2] = sf::Vertex(
-            sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y),
-            sf::Color(0, 0, 0, 255));
-
-    this->m_rectangle[3] = sf::Vertex(
-            sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y / 2),
-            sf::Color(0, 0, 0, 0));
-
-
-
-    this->m_rectangle[4] = sf::Vertex(sf::Vector2f(this->m_dimensions.x / 2, 0),
-            sf::Color(0, 0, 0, 0));
-
-    this->m_rectangle[5] = sf::Vertex(sf::Vector2f(this->m_dimensions.x / 2, this->m_dimensions.y),
-            sf::Color(0, 0, 0, 0));
-
-    this->m_rectangle[6] = sf::Vertex(
-            sf::Vector2f(this->m_dimensions.x, this->m_dimensions.y),
-            sf::Color(0, 0, 0, 255));
-
-    this->m_rectangle[7] = sf::Vertex(
-            sf::Vector2f(this->m_dimensions.x, 0),
-            sf::Color(0, 0, 0, 255));
-
-
-
-
     this->m_headline.setCharacterSize(this->m_dimensions.y / 25);
 
     this->m_teaser.setCharacterSize(this->m_dimensions.y / 28);
 
     this->m_byline.setCharacterSize(this->m_dimensions.y / 40);
-
-    /**
-     * Position the text, accordingly.
-     */
-    this->m_headline.setPosition(
-            sf::Vector2f(this->m_dimensions.x / 2, this->m_dimensions.y / 2 + 40));
-
-    this->m_teaser.setPosition(sf::Vector2f(this->m_dimensions.x / 2, this->m_dimensions.y / 2 + 100));
-
-    this->m_byline.setPosition(
-            this->m_dimensions.x
-                    - ((this->m_byline.getCharacterSize() / 2.0f)
-                            * this->m_byline.getString().getSize() + 20),
-            this->m_dimensions.y - 60);
 
 }
 
@@ -271,17 +228,17 @@ SmallImagePanel::~SmallImagePanel() {
     //
 }
 
-void SmallImagePanel::UpdateGraphics() {
+void SmallImagePanel::UpdateGraphics(sf::FloatRect& view) {
     float noSlide =
             std::abs(
-                    this->m_dimensions.y
+                    view.height
                             - (this->m_texture.getSize().y
                                     * this->m_sprite.getScale().y));
     if (noSlide > 2.0f) {
         this->m_slideY += this->m_slideDelta;
         if (this->m_slideY
                 > std::abs(
-                        this->m_dimensions.y
+                        view.height
                                 - (this->m_texture.getSize().y
                                         * this->m_sprite.getScale().y))
                 || this->m_slideY < 0.0f) {
@@ -292,6 +249,59 @@ void SmallImagePanel::UpdateGraphics() {
 
     this->m_sprite.setPosition(
             this->getPosition() - sf::Vector2f(this->m_slideX, this->m_slideY));
+
+    // Setup gradient box # 1
+    this->m_rectangle[0] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x,
+                    this->getPosition().y + this->m_dimensions.y - 200),
+            sf::Color(0, 0, 0, 0));
+
+    this->m_rectangle[1] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x, this->m_dimensions.y),
+            sf::Color(0, 0, 0, 255));
+
+    this->m_rectangle[2] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x + this->m_dimensions.x,
+                    this->getPosition().y + this->m_dimensions.y),
+            sf::Color(0, 0, 0, 255));
+
+    this->m_rectangle[3] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x + this->m_dimensions.x,
+                    this->getPosition().y + this->m_dimensions.y - 200),
+            sf::Color(0, 0, 0, 0));
+
+
+
+    this->m_rectangle[4] = sf::Vertex(sf::Vector2f(this->getPosition().x + this->m_dimensions.x / 2, 0),
+            sf::Color(0, 0, 0, 0));
+
+    this->m_rectangle[5] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x + this->m_dimensions.x / 2, this->m_dimensions.y),
+            sf::Color(0, 0, 0, 0));
+
+    this->m_rectangle[6] = sf::Vertex(
+            sf::Vector2f(this->getPosition().x + this->m_dimensions.x, this->m_dimensions.y),
+            sf::Color(0, 0, 0, 255));
+
+    this->m_rectangle[7] = sf::Vertex(sf::Vector2f(this->getPosition().x + this->m_dimensions.x, 0),
+            sf::Color(0, 0, 0, 255));
+
+    /**
+     * Position the text, accordingly.
+     */
+    this->m_headline.setPosition(
+            sf::Vector2f(this->getPosition().x + 40,
+                    this->getPosition().y + this->m_dimensions.y / 2 + 40));
+
+    this->m_teaser.setPosition(
+            sf::Vector2f(this->getPosition().x + 80,
+                    this->getPosition().y + this->m_dimensions.y / 2 + 80));
+
+    this->m_byline.setPosition(
+            this->getPosition().x + this->m_dimensions.x
+                    - ((this->m_byline.getCharacterSize() / 2.0f)
+                            * this->m_byline.getString().getSize() + 20),
+            this->getPosition().y + this->m_dimensions.y - 60);
 
 }
 
