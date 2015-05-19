@@ -13,7 +13,7 @@ namespace scenes {
  * Dashboard constructor.
  */
 Dashboard::Dashboard() {
-    this->m_panelDisplayCounter = 0;
+    this->m_paneldisplaycounter = 0;
 
     // FIXME: Fonts are loaded from an absolute location.
     this->m_font_h1.loadFromFile(
@@ -32,16 +32,16 @@ Dashboard::Dashboard() {
 void Dashboard::AddPanel(interface::DrawablePanel * p) {
     unsigned int maxPanels = 10;
 
-    this->m_LargePanelImages.insert(this->m_LargePanelImages.begin(), p);
+    this->m_largepanelimages.insert(this->m_largepanelimages.begin(), p);
 
-    if (this->m_LargePanelImages.size() >= maxPanels) {
+    if (this->m_largepanelimages.size() >= maxPanels) {
 
 #ifdef __DEBUG__
         std::cout << "Destroyed first element, size is: "
-                << this->m_LargePanelImages.size() << std::endl;
+                << this->m_largepanelimages.size() << std::endl;
 #endif
-        const interface::DrawablePanel* p1 = this->m_LargePanelImages.back();
-        this->m_LargePanelImages.pop_back();
+        const interface::DrawablePanel* p1 = this->m_largepanelimages.back();
+        this->m_largepanelimages.pop_back();
         delete p1; // LargeImagePanels
 
         //delete p1;
@@ -50,8 +50,8 @@ void Dashboard::AddPanel(interface::DrawablePanel * p) {
     // Next, push the rest to the side.
     sf::Vector2f l_position(0.f, 0.f);
     for (std::vector<interface::DrawablePanel*>::iterator p =
-            this->m_LargePanelImages.begin();
-            p != this->m_LargePanelImages.end(); ++p) {
+            this->m_largepanelimages.begin();
+            p != this->m_largepanelimages.end(); ++p) {
 
         (*p)->setPosition(l_position);
 
@@ -161,7 +161,7 @@ void Dashboard::UpdateDataAsync() {
 void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
     switch (e) {
     case event::Event::MESSAGESPENDING: {
-        this->m_messageBar.SetValue(data["messagespending"].int_value());
+        this->m_progressbar.SetValue(data["messagespending"].int_value());
 
     }
         ;
@@ -194,13 +194,13 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
      * So we're going to cheet. If the last restart is large than
      * 30 seconds, pick a new panel. (this simulates an animator.)
      */
-    if (this->m_wallclock.getElapsedTime() >= sf::seconds(5)) {
+    if (this->m_wallclock.getElapsedTime() >= sf::seconds(10)) {
         this->m_wallclock.restart();
 
         this->prevValue = this->newValue;
         this->newValue += view.width;
 
-        if (this->newValue >= (this->m_LargePanelImages.size() * view.width)) {
+        if (this->newValue >= (this->m_largepanelimages.size() * view.width)) {
             this->newValue = 0;
         }
 
@@ -219,24 +219,24 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
                             * this->m_clock.getString().getSize() + 40),
             view.top);
 
-    this->m_messageBar.setPosition(sf::Vector2f(view.left, view.top - 60));
+    this->m_progressbar.setPosition(sf::Vector2f(view.left + 40, view.height - 60));
 
-    for (interface::DrawablePanel * p : this->m_LargePanelImages) {
+    for (interface::DrawablePanel * p : this->m_largepanelimages) {
         p->UpdateGraphics(view);
     }
 
-    this->m_messageBar.UpdateGraphics(view);
+    this->m_progressbar.UpdateGraphics(view);
 
 }
 
 void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
-    for (auto *p : this->m_LargePanelImages) {
+    for (auto *p : this->m_largepanelimages) {
         if (p != NULL)
             target.draw(*p, states);
     }
 
-    target.draw(this->m_messageBar, states);
+    target.draw(this->m_progressbar, states);
     target.draw(this->m_clock, states);
 }
 

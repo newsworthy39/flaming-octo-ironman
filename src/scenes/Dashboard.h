@@ -29,7 +29,6 @@ class Dashboard: public sf::Transformable,
         public sf::Drawable, public interface::Observable {
 
 public:
-
     Dashboard();
     virtual ~Dashboard();
 
@@ -37,20 +36,20 @@ public:
     void UpdateGraphics(sf::FloatRect&);
     void UpdateDataAsync();
     void SetDimensions(sf::Vector2f dimensions);
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     void AddPanel(interface::DrawablePanel* p);
 
     // Passing solution, from interface::Observable
     void ReceiveMessage(const event::Event&, json11::Json & data);
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
     void updateClock();
     float prevValue, newValue;
-    unsigned int m_panelDisplayCounter;
-    std::vector<interface::DrawablePanel*> m_LargePanelImages;
+    unsigned int m_paneldisplaycounter;
+    std::vector<interface::DrawablePanel*> m_largepanelimages;
     //objects::AnimatedRectangle m_animatedRectangle;
-    objects::Progressbar m_messageBar;
+    objects::Progressbar m_progressbar;
     sf::Vector2f m_dimensions;
     sf::Clock m_wallclock;
     sf::Font m_font_h1;
