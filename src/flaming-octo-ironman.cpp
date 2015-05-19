@@ -69,7 +69,11 @@ int main() {
     // Start json-poller.
     poller.Start();
 
-    // update the view to the new size of the window
+    /* FIXME: When running in FULLSCREEN Twin-monitor-mode (3580x1080)
+    * When viewRect isn't 3840x1080, its 1920x1080! Also, there are some
+    * calculations on locations, when using virtual screens that doesnt'
+    * entirely pan-out.
+    */
     sf::FloatRect viewRect(0, 0, SCREEN_W, SCREEN_H);
 
     // Begin rendering-loop.
