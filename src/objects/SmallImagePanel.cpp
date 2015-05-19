@@ -5,11 +5,11 @@
  *      Author: gandalf
  */
 
-#include <objects/LargeImagePanel.hpp>
+#include <objects/SmallImagePanel.hpp>
 
 namespace objects {
 
-LargeImagePanel::LargeImagePanel() {
+SmallImagePanel::SmallImagePanel() {
 
     this->m_mediaPath = "/favicon.ico";
 
@@ -44,7 +44,7 @@ LargeImagePanel::LargeImagePanel() {
 }
 
 //// Move constructor.
-//LargeImagePanel::LargeImagePanel(LargeImagePanel&& other) {
+//SmallImagePanel::SmallImagePanel(SmallImagePanel&& other) {
 //    this->m_font_h1 = other.m_font_h1;
 //
 //    this->m_font_h2 = other.m_font_h2;
@@ -66,7 +66,7 @@ LargeImagePanel::LargeImagePanel() {
 //}
 
 
-void LargeImagePanel::SetTeaser(sf::String t) {
+void SmallImagePanel::SetTeaser(sf::String t) {
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
     //t.replace("ø", L"ø");
 
@@ -84,7 +84,10 @@ void LargeImagePanel::SetTeaser(sf::String t) {
     this->m_teaser.setString(t);
 }
 
-void LargeImagePanel::SetHeadline(sf::String t) {
+void SmallImagePanel::SetHeadline(sf::String t) {
+
+    // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
+
     int numCharsOnALine = 100;
     int numLines = std::ceil(t.getSize() / numCharsOnALine);
 #ifdef __DEBUG__
@@ -99,10 +102,9 @@ void LargeImagePanel::SetHeadline(sf::String t) {
     this->m_headline.setString(t);
 }
 
-void LargeImagePanel::SetByline(sf::String t) {
+void SmallImagePanel::SetByline(sf::String t) {
     // FIXME: GODDAMN! Hvad sker der for de tegn, som er enkodet utf8, multi-byte, men ikke kan ses af SFML
     //t.replace("ø", L"ø");
-
 #ifdef __DEBUG__
     std::cout << "Byline " << t.toAnsiString() << std::endl;
 #endif
@@ -110,11 +112,11 @@ void LargeImagePanel::SetByline(sf::String t) {
     this->m_byline.setString(t);
 }
 
-void LargeImagePanel::SetMediaPath(sf::String imagePath) {
+void SmallImagePanel::SetMediaPath(sf::String imagePath) {
     this->m_mediaPath = imagePath;
 }
 
-void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
+void SmallImagePanel::SetDimensions(sf::Vector2f dimensions) {
 
     this->m_dimensions = dimensions;
 
@@ -154,7 +156,7 @@ void LargeImagePanel::SetDimensions(sf::Vector2f dimensions) {
 
 }
 
-void LargeImagePanel::UpdateDataAsync() {
+void SmallImagePanel::UpdateDataAsync() {
 
     this->downloadImages();
 
@@ -185,7 +187,7 @@ void LargeImagePanel::UpdateDataAsync() {
 
 }
 
-bool LargeImagePanel::downloadImages() {
+bool SmallImagePanel::downloadImages() {
 
     if (this->m_mediaPath.isEmpty()) {
 #ifdef __DEBUG__
@@ -248,11 +250,11 @@ bool LargeImagePanel::downloadImages() {
     return false;
 }
 
-LargeImagePanel::~LargeImagePanel() {
+SmallImagePanel::~SmallImagePanel() {
     //
 }
 
-void LargeImagePanel::UpdateGraphics() {
+void SmallImagePanel::UpdateGraphics() {
     float noSlide =
             std::abs(
                     this->m_dimensions.y
@@ -276,7 +278,7 @@ void LargeImagePanel::UpdateGraphics() {
 
 }
 
-void LargeImagePanel::draw(sf::RenderTarget& target,
+void SmallImagePanel::draw(sf::RenderTarget& target,
         sf::RenderStates states) const {
     target.draw(this->m_sprite, states);
     target.draw(this->m_rectangle, 4, sf::Quads);

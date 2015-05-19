@@ -5,8 +5,8 @@
  *      Author: gandalf
  */
 
-#ifndef OBJECTS_LARGEITEMPANEL_H_
-#define OBJECTS_LARGEITEMPANEL_H_
+#ifndef OBJECTS_SMALLIMAGEPANEL_H_
+#define OBJECTS_SMALLIMAGEPANEL_H_
 
 #include <iostream>
 #include <string>
@@ -18,12 +18,12 @@
 
 namespace objects {
 
-class LargeImagePanel: public sf::Drawable,
+class SmallImagePanel: public sf::Drawable,
         public sf::Transformable,
-        public ::interface::DrawablePanel {
+        public interface::DrawablePanel {
 public:
-    LargeImagePanel();
-    virtual ~LargeImagePanel();
+    SmallImagePanel();
+    virtual ~SmallImagePanel();
 
     void UpdateGraphics();
     void UpdateDataAsync();
