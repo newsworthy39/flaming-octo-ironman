@@ -18,9 +18,7 @@
 
 namespace objects {
 
-class SmallImagePanel: public sf::Drawable,
-        public sf::Transformable,
-        public interface::DrawablePanel {
+class SmallImagePanel: public interface::DrawablePanel {
 public:
     SmallImagePanel();
     virtual ~SmallImagePanel();
@@ -47,7 +45,7 @@ private:
     sf::Vector2f m_dimensions;
     sf::Texture m_texture;
     sf::Sprite m_sprite;
-    sf::Vertex m_rectangle[4];
+    sf::Vertex m_rectangle[8];
 
     /**
      * Texts, used to describe the image.

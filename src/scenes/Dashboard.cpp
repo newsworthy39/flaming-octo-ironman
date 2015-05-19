@@ -12,9 +12,8 @@ namespace scenes {
 /**
  * Dashboard constructor.
  */
-Dashboard::Dashboard() : m_LargePanelImages(0) {
+Dashboard::Dashboard() {
     this->m_panelDisplayCounter = 0;
-
 
     // FIXME: Fonts are loaded from an absolute location.
     this->m_font_h1.loadFromFile(
@@ -27,7 +26,7 @@ Dashboard::Dashboard() : m_LargePanelImages(0) {
     updateClock();
 }
 
-void Dashboard::AddPanel(objects::LargeImagePanel* p) {
+void Dashboard::AddPanel(interface::DrawablePanel * p) {
     unsigned int maxPanels = 10;
 
     this->m_LargePanelImages.insert(this->m_LargePanelImages.begin(), p);
@@ -35,9 +34,10 @@ void Dashboard::AddPanel(objects::LargeImagePanel* p) {
     if (this->m_LargePanelImages.size() >= maxPanels) {
 
 #ifdef __DEBUG__
-        std::cout << "Destroyed first element, size is: " << this->m_LargePanelImages.size() << std::endl;
+        std::cout << "Destroyed first element, size is: "
+                << this->m_LargePanelImages.size() << std::endl;
 #endif
-        const objects::LargeImagePanel * p1 = this->m_LargePanelImages.back();
+        const interface::DrawablePanel* p1 = this->m_LargePanelImages.back();
         this->m_LargePanelImages.pop_back();
         delete p1; // LargeImagePanels
 
@@ -62,9 +62,8 @@ void Dashboard::SetDimensions(sf::Vector2f dimensions) {
     this->m_messageBar.setPosition(
             sf::Vector2f(this->getPosition().x, this->m_dimensions.y - 60));
 
-    this->m_animatedRectangle.setPosition(
-            sf::Vector2f(this->getPosition().x, this->getPosition().y));
-
+    //this->m_animatedRectangle.setPosition(
+            //sf::Vector2f(this->getPosition().x, this->getPosition().y));
 }
 
 Dashboard::~Dashboard() {
@@ -73,7 +72,7 @@ Dashboard::~Dashboard() {
 
 void Dashboard::UpdateDataAsync() {
 
-    sf::Http http("http://192.168.1.67", 9001);
+    sf::Http http("http://localhost", 9001);
 
     sf::Http::Request request;
 
@@ -93,21 +92,57 @@ void Dashboard::UpdateDataAsync() {
         std::string err;
         auto json = json11::Json::parse(response.getBody(), err);
 
+        // resourcefactory o; (observable and stuff)
+        // o.addMediaPath(json["mediapath"]);
+        // interface::Drawable * d = new ...
+        // d->addResourceFactory(o)
+        // d->UpdateDataAsync
+        // (inside d) this->m_resourceFactory.Download(this->m_mediapath)
+
+        std::random_device rd;
+        //std::mt19937 mt(rd());
+        std::default_random_engine mt(rd());
+        std::uniform_int_distribution<> dist(0, 1);
+        int f = dist(mt);
+
 #ifdef __DEBUG__
         std::cout << err << ", " << json.dump() << std::endl;
+        std::cout << "Random: " << f << std::endl;
 #endif
 
-        objects::LargeImagePanel * p = new objects::LargeImagePanel();
-        p->SetMediaPath(json["mediapath"].string_value());
-        p->SetHeadline(json["headline"].string_value());
-        p->SetTeaser(json["teaser"].string_value());
-        p->SetByline(json["byline"].string_value());
-        p->SetDimensions(this->m_dimensions);
+        switch (f) {
+        case 0: {
+            objects::LargeImagePanel * p = new objects::LargeImagePanel();
+            p->SetMediaPath(json["mediapath"].string_value());
+            p->SetHeadline(json["headline"].string_value());
+            p->SetTeaser(json["teaser"].string_value());
+            p->SetByline(json["byline"].string_value());
+            p->SetDimensions(this->m_dimensions);
 
-        p->UpdateDataAsync();
+            p->UpdateDataAsync();
 
-        this->AddPanel(p);
+            this->AddPanel(p);
 
+        }
+            ;
+            break;
+        case 1: {
+            objects::SmallImagePanel * p = new objects::SmallImagePanel();
+            p->SetMediaPath(json["mediapath"].string_value());
+            p->SetHeadline(json["headline"].string_value());
+            p->SetTeaser(json["teaser"].string_value());
+            p->SetByline(json["byline"].string_value());
+            p->SetDimensions(this->m_dimensions);
+
+            p->UpdateDataAsync();
+
+            this->AddPanel(p);
+
+        }
+            ;
+            break;
+
+        }
     }
 }
 
@@ -167,19 +202,18 @@ void Dashboard::UpdateGraphics() {
                 << this->m_panelDisplayCounter << std::endl;
     }
 
-    for (objects::LargeImagePanel * p : this->m_LargePanelImages) {
+    for (interface::DrawablePanel * p : this->m_LargePanelImages) {
         p->UpdateGraphics();
     }
 
     this->m_messageBar.UpdateGraphics();
 
-
 }
 
 void Dashboard::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
-    const objects::LargeImagePanel * p =
-            this->m_LargePanelImages.at(this->m_panelDisplayCounter);
+    const interface::DrawablePanel * p = this->m_LargePanelImages.at(
+            this->m_panelDisplayCounter);
 
     if (p != NULL)
         target.draw(*p, states);

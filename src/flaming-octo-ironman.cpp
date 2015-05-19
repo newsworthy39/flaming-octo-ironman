@@ -50,7 +50,7 @@ int main() {
     window.setFramerateLimit(60);
 
     // Jsonthreaded poller
-    events::JSONThreadedPoller poller("http://192.168.1.67", 9000);
+    events::JSONThreadedPoller poller("http://localhost", 9000);
 
     // Objects used, here-in.
     scenes::Dashboard dashboard;

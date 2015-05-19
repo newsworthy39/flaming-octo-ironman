@@ -15,7 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <event/Event.h>
-#include <interface/Observable.h>
+#include <interface/Observable.hpp>
 #include <json11/json11.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>

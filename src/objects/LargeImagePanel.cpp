@@ -19,7 +19,7 @@ LargeImagePanel::LargeImagePanel() {
 
     this->m_slideY = 0.0f;
 
-    this->m_slideDelta = 0.2f;
+    this->m_slideDelta = 0.1f;
 
     // FIXME: Fonts are loaded from an absolute location.
     this->m_font_h1.loadFromFile(

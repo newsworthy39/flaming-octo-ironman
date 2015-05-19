@@ -1,6 +1,6 @@
 
-#ifndef __DELEGATE_H_
-#define __DELEGATE_H_
+#ifndef _OBSERVABLE_H
+#define _OBSERVABLE_H
 
 #include <event/Event.h>
 #include <json11/json11.hpp>

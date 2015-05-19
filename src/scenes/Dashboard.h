@@ -10,12 +10,14 @@
 
 #include <iostream>
 #include <vector>
+#include <random>
 #include <chrono>
 #include <json11/json11.hpp>
-#include <interface/Observable.h>
-#include <objects/AnimatedRectangle.hpp>
+#include <interface/DrawablePanel.hpp>
+#include <interface/Observable.hpp>
 #include <objects/Progressbar.hpp>
 #include <objects/LargeImagePanel.hpp>
+#include <objects/SmallImagePanel.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Network.hpp>
@@ -24,8 +26,7 @@
 namespace scenes {
 
 class Dashboard: public sf::Transformable,
-        public sf::Drawable,
-        public interface::Observable {
+        public sf::Drawable, public interface::Observable {
 
 public:
 
@@ -37,7 +38,7 @@ public:
     void UpdateDataAsync();
     void SetDimensions(sf::Vector2f dimensions);
 
-    void AddPanel(objects::LargeImagePanel* p);
+    void AddPanel(interface::DrawablePanel* p);
 
     // Passing solution, from interface::Observable
     void ReceiveMessage(const event::Event&, json11::Json & data);
@@ -46,10 +47,10 @@ public:
 private:
     void updateClock();
     unsigned int m_panelDisplayCounter;
-    std::vector<objects::LargeImagePanel*> m_LargePanelImages;
-
-    objects::AnimatedRectangle m_animatedRectangle;
+    std::vector<interface::DrawablePanel*> m_LargePanelImages;
+    //objects::AnimatedRectangle m_animatedRectangle;
     objects::Progressbar m_messageBar;
+
     sf::Vector2f m_dimensions;
     sf::Clock m_wallclock;
     sf::Font m_font_h1;

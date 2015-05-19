@@ -18,9 +18,7 @@
 
 namespace objects {
 
-class LargeImagePanel: public sf::Drawable,
-        public sf::Transformable,
-        public ::interface::DrawablePanel {
+class LargeImagePanel: public interface::DrawablePanel {
 public:
     LargeImagePanel();
     virtual ~LargeImagePanel();
