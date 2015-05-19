@@ -199,9 +199,6 @@ bool LargeImagePanel::downloadImages() {
 
         void * ptrResponse = (void*) response.getBody().c_str();
 
-        std::cout << "Response length: " << response.getField("Content-Length")
-                << std::endl;
-
         ssize_t sSize = std::stoi(response.getField("Content-Length"));
 
         bool status = this->m_texture.loadFromMemory(ptrResponse, sSize);

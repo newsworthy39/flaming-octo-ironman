@@ -29,7 +29,7 @@
 #define SCREEN_H 900
 #define FULLSCREEN false
 #else
-#define SCREEN_W 1920
+#define SCREEN_W 3840
 #define SCREEN_H 1080
 #define FULLSCREEN true
 #endif
@@ -51,7 +51,8 @@ int main() {
             FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Close, context);
 
     window.setMouseCursorVisible(!FULLSCREEN);
-    window.setFramerateLimit(60);
+//    window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
 
     // Jsonthreaded poller
     events::JSONThreadedPoller poller("http://localhost", 9000);
@@ -111,18 +112,41 @@ int main() {
         //window.clear(sf::Color(89, 217, 217));
         window.clear(sf::Color(0, 0, 0));
 
+        #ifdef __DEBUG__
         // FIXME: Integrate, this into a state-machine, accepting scene-objects.
         // let's define a view
-        sf::View view(viewRect);
+        // Draw shit in it.
+        window.draw(dashboard);
+
+        // Show display.
+        window.display();
+#else
+
+        // Production multi-screen display (twinview primarly nvidia)
+        // let's define a view
+        sf::View leftmonitor(viewRect);
+        leftmonitor.setViewport(sf::FloatRect(0, 0, 0.5, 1));
 
         // activate it
-        window.setView(view);
+        window.setView(leftmonitor);
+
+        // Draw shit in it.
+        window.draw(dashboard);
+
+        // FIXME: Integrate, this into a state-machine, accepting scene-objects.
+        // let's define a view
+        sf::View rightmonitor(viewRect);
+        rightmonitor.setViewport(sf::FloatRect(0.5, 0, 0.5, 1));
+
+        // activate it
+        window.setView(rightmonitor);
 
         // Draw shit in it.
         window.draw(dashboard);
 
         // Show display.
         window.display();
+#endif
     }
 
     // make entirely sure.
