@@ -23,7 +23,8 @@ Dashboard::Dashboard() {
     this->m_clock.setColor(sf::Color(0, 255, 255, 240));
     this->m_clock.setCharacterSize(120);
 
-    this->prevValue = 0.f; this->newValue = 0.f;
+    this->prevValue = 0.f;
+    this->newValue = 0.f;
 
     updateClock();
 }
@@ -195,12 +196,14 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
      */
     if (this->m_wallclock.getElapsedTime() >= sf::seconds(5)) {
         this->m_wallclock.restart();
+
         this->prevValue = this->newValue;
         this->newValue += view.width;
 
-        if (this->newValue >= ( this->m_LargePanelImages.size() * view.width) ) {
+        if (this->newValue >= (this->m_LargePanelImages.size() * view.width)) {
             this->newValue = 0;
         }
+
     }
 
     float diffRadius = (this->prevValue - this->newValue) / 16;
