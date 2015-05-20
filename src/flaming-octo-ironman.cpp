@@ -36,125 +36,127 @@
 
 int main() {
 
-    // initialize X11
-    if (0 == XInitThreads()) {
-        std::cerr << "Threads are not supported, on this platform, aborting."
-                << std::endl;
-        exit(-1);
-    }
+	// initialize X11
+	if (0 == XInitThreads()) {
+		std::cerr << "Threads are not supported, on this platform, aborting."
+				<< std::endl;
+		exit(-1);
+	}
 
-    sf::ContextSettings context;
-    context.antialiasingLevel = 4;
+	sf::ContextSettings context;
 
-    sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H),
-            "Flaming-octo-ironman",
-            FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Close, context);
+	sf::RenderWindow window(sf::VideoMode(SCREEN_W, SCREEN_H),
+			"Flaming-octo-ironman",
+			FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Close, context);
 
-    window.setMouseCursorVisible(!FULLSCREEN);
+	window.setMouseCursorVisible(!FULLSCREEN);
 //    window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(true);
+	window.setVerticalSyncEnabled(true);
 
-    // Jsonthreaded poller
-    events::JSONThreadedPoller poller("http://localhost", 9000);
+	// Jsonthreaded poller
+	events::JSONThreadedPoller poller("http://localhost", 9000);
 
-    // Objects used, here-in.
-    scenes::Dashboard dashboard;
-    dashboard.setPosition(sf::Vector2f(20, 20));
-    dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
-    dashboard.UpdateDataAsync();
+	// Objects used, here-in.
+	scenes::Dashboard dashboard;
+	dashboard.setPosition(sf::Vector2f(20, 20));
+	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
+	dashboard.UpdateDataAsync();
 
-    // Add callback, to objects, to receive events.
-    poller.AddObserver(dashboard);
+	// Add callback, to objects, to receive events.
+	poller.AddObserver(dashboard);
 
-    // Start json-poller.
-    poller.Start();
+	// Start json-poller.
+	poller.Start();
 
-    /* FIXME: When running in FULLSCREEN Twin-monitor-mode (3580x1080)
-    * When viewRect isn't 3840x1080, its 1920x1080! Also, there are some
-    * calculations on locations, when using virtual screens that doesnt'
-    * entirely pan-out.
-    */
-    sf::FloatRect viewRect(0, 0, SCREEN_W, SCREEN_H);
+	/* FIXME: When running in FULLSCREEN Twin-monitor-mode (3580x1080)
+	 * When viewRect isn't 3840x1080, its 1920x1080! Also, there are some
+	 * calculations on locations, when using virtual screens that doesnt'
+	 * entirely pan-out.
+	 */
+	sf::FloatRect viewRect(0, 0, SCREEN_W, SCREEN_H);
 
-    // Begin rendering-loop.
-    while (window.isOpen()) {
+	// Begin rendering-loop.
+	while (window.isOpen()) {
 
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed
-                    || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                window.close();
-                poller.Stop();
-            }
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed
+					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				window.close();
+				poller.Stop();
+			}
 
-            // Fake, an overall event. (synchron)
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-                dashboard.UpdateDataAsync();
-            }
+			// Fake, an overall event. (synchron)
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
+				dashboard.UpdateDataAsync();
+			}
 
-            if (event.type == sf::Event::Resized) {
+			if (event.type == sf::Event::Resized) {
 #ifdef __DEBUG__
-                std::cout << "The window was resized" << std::endl;
+				std::cout << "The window was resized" << std::endl;
 #endif
-                dashboard.SetDimensions((sf::Vector2f) window.getSize());
+				dashboard.SetDimensions((sf::Vector2f) window.getSize());
 
-            }
+			}
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                viewRect.left += 4.f;
-            }
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+				viewRect.left += 4.f;
+			}
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                viewRect.left -= 4.f;
-            }
-        }
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+				viewRect.left -= 4.f;
+			}
+		}
 
-        // FIXME: Integrate, this into a state-machine, accepting scene-objects.
-        dashboard.UpdateGraphics(viewRect);
+		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
+		dashboard.UpdateGraphics(viewRect);
 
-        // We like our color-scheme, but black is purrrrty.
-        //window.clear(sf::Color(89, 217, 217));
-        window.clear(sf::Color(0, 0, 0));
+		// We like our color-scheme, but black is purrrrty.
+		//window.clear(sf::Color(89, 217, 217));
+		window.clear(sf::Color(0, 0, 0));
 
-        #ifdef __DEBUG__
-        // FIXME: Integrate, this into a state-machine, accepting scene-objects.
-        // let's define a view
-        // Draw shit in it.
-        window.draw(dashboard);
+#ifdef __DEBUG__
+		sf::View v(viewRect);
+		window.setView(v);
 
-        // Show display.
-        window.display();
+		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
+		// let's define a view
+		// Draw shit in it.
+		window.draw(dashboard);
+
+		// Show display.
+		window.display();
 #else
 
-        // Production multi-screen display (twinview primarly nvidia)
-        // let's define a view
-        sf::View leftmonitor(viewRect);
-        leftmonitor.setViewport(sf::FloatRect(0, 0, 0.5, 1));
+		// Production multi-screen display (twinview primarly nvidia)
+		// let's define a view
+		sf::View leftmonitor(viewRect);
+		leftmonitor.setViewport(sf::FloatRect(0, 0, 0.5, 1));
 
-        // activate it
-        window.setView(leftmonitor);
+		// activate it
+		window.setView(leftmonitor);
 
-        // Draw shit in it.
-        window.draw(dashboard);
+		// Draw shit in it.
+		window.draw(dashboard);
 
-        // FIXME: Integrate, this into a state-machine, accepting scene-objects.
-        // let's define a view
-        sf::View rightmonitor(viewRect);
-        rightmonitor.setViewport(sf::FloatRect(0.5, 0, 0.5, 1));
+		// FIXME: Integrate, this into a state-machine, accepting scene-objects.
+		// let's define a view
+		sf::View rightmonitor(viewRect);
+		rightmonitor.setViewport(sf::FloatRect(0.5, 0, 0.5, 1));
 
-        // activate it
-        window.setView(rightmonitor);
+		// activate it
+		window.setView(rightmonitor);
 
-        // Draw shit in it.
-        window.draw(dashboard);
+		// Draw shit in it.
+		window.draw(dashboard);
 
-        // Show display.
-        window.display();
+		// Show display.
+		window.display();
 #endif
-    }
+	}
 
-    // make entirely sure.
-    poller.Stop();
+	// make entirely sure.
+	poller.Stop();
 
-    return 0;
+	return 0;
 }
