@@ -12,7 +12,9 @@ namespace scenes {
 /**
  * Dashboard constructor.
  */
-Dashboard::Dashboard() {
+Dashboard::Dashboard(const std::string host, int port) {
+    this->m_port = port;
+    this->m_host = host;
     this->m_paneldisplaycounter = 0;
 
     // FIXME: Fonts are loaded from an absolute location.
@@ -20,7 +22,7 @@ Dashboard::Dashboard() {
             "/home/gandalf/workspace/flaming-octo-ironman/src/font/Roboto-Regular.ttf");
 
     this->m_clock.setFont(this->m_font_h1);
-    this->m_clock.setColor(sf::Color(0, 255, 255, 240));
+    this->m_clock.setColor(sf::Color(255, 0, 0, 240));
     this->m_clock.setCharacterSize(120);
 
     this->prevValue = 0.f;
@@ -80,7 +82,8 @@ Dashboard::~Dashboard() {
 
 void Dashboard::UpdateDataAsync() {
 
-    sf::Http http("http://localhost", 9001);
+
+    sf::Http http(this->m_host, this->m_port);
 
     sf::Http::Request request;
 
@@ -88,7 +91,7 @@ void Dashboard::UpdateDataAsync() {
 
     request.setUri("/view/dashboard-0?type=raw");
 
-    request.setHttpVersion(1, 1); // HTTP 1.0
+    request.setHttpVersion(1, 0); // HTTP 1.0
 
     request.setField("Connection", "Close");
 
@@ -117,6 +120,13 @@ void Dashboard::UpdateDataAsync() {
         std::cout << err << ", " << json.dump() << std::endl;
         std::cout << "Random: " << f << std::endl;
 #endif
+        // This is the first part of the decision-making.
+        if (0 == std::string().compare(json["mediapath"].string_value())) {
+#ifdef __DEBUG__
+            std::cout << "No image path" << std::endl;
+#endif
+            f = 2; // Deliberately, set textpanel if no image.
+        }
 
         switch (f) {
         case 0: {
@@ -150,6 +160,22 @@ void Dashboard::UpdateDataAsync() {
             ;
             break;
 
+        case 2: {
+            objects::LogPanel * p = new objects::LogPanel();
+
+            p->SetHeadline(json["headline"].string_value());
+            p->SetTeaser(json["teaser"].string_value());
+            p->SetByline(json["byline"].string_value());
+            p->SetDimensions(this->m_dimensions);
+
+            p->UpdateDataAsync();
+
+            this->AddPanel(p);
+
+        }
+            ;
+            break;
+
         }
     }
 }
@@ -169,6 +195,7 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
 
     case event::Event::MESSAGE: {
         std::string stringValue = data["message"].string_value();
+
         if (0 == stringValue.compare("update")) {
 #ifdef __DEBUG__
             std::cout << "I was asked to do a full update" << std::endl;
@@ -194,7 +221,7 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
      * So we're going to cheet. If the last restart is large than
      * 30 seconds, pick a new panel. (this simulates an animator.)
      */
-    if (this->m_wallclock.getElapsedTime() >= sf::seconds(10)) {
+    if (this->m_wallclock.getElapsedTime() >= sf::seconds(30)) {
         this->m_wallclock.restart();
 
         this->prevValue = this->newValue;
@@ -206,7 +233,7 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
 
     }
 
-    float diffRadius = (this->prevValue - this->newValue) / 16;
+    float diffRadius = (this->prevValue - this->newValue) / 8;
     view.left = this->prevValue + diffRadius;
     this->prevValue -= diffRadius;
 
@@ -219,7 +246,8 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
                             * this->m_clock.getString().getSize() + 40),
             view.top);
 
-    this->m_progressbar.setPosition(sf::Vector2f(view.left + 40, view.height - 60));
+    this->m_progressbar.setPosition(
+            sf::Vector2f(view.left + 40, view.height - 60));
 
     for (interface::DrawablePanel * p : this->m_largepanelimages) {
         p->UpdateGraphics(view);

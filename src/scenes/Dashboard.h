@@ -12,12 +12,15 @@
 #include <vector>
 #include <random>
 #include <chrono>
+
 #include <json11/json11.hpp>
 #include <interface/DrawablePanel.hpp>
 #include <interface/Observable.hpp>
 #include <objects/Progressbar.hpp>
 #include <objects/LargeImagePanel.hpp>
 #include <objects/SmallImagePanel.hpp>
+#include <objects/LogPanel.hpp>
+
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Network.hpp>
@@ -26,10 +29,11 @@
 namespace scenes {
 
 class Dashboard: public sf::Transformable,
-        public sf::Drawable, public interface::Observable {
+        public sf::Drawable,
+        public interface::Observable {
 
 public:
-    Dashboard();
+    Dashboard(const std::string host, int port);
     virtual ~Dashboard();
 
     // Necessary, components.
@@ -54,12 +58,9 @@ private:
     sf::Clock m_wallclock;
     sf::Font m_font_h1;
     sf::Text m_clock;
-
-
-
-
+    std::string m_host;
+    int m_port;
 };
-
 } /* namespace objects */
 
 #endif /* BARDIAGRAMS_H_ */

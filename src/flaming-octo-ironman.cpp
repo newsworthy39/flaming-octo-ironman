@@ -29,9 +29,10 @@
 #define SCREEN_H 900
 #define FULLSCREEN false
 #else
-#define SCREEN_W 3840
+#define SCREEN_W 1920
 #define SCREEN_H 1080
 #define FULLSCREEN true
+//#Define SPLITSCREEN
 #endif
 
 int main() {
@@ -54,10 +55,10 @@ int main() {
 	window.setVerticalSyncEnabled(true);
 
 	// Jsonthreaded poller
-	events::JSONThreadedPoller poller("http://localhost", 9000);
+	events::JSONThreadedPoller poller("http://mjay.me", 9000);
 
 	// Objects used, here-in.
-	scenes::Dashboard dashboard;
+	scenes::Dashboard dashboard("http://mjay.me", 9001);
 	dashboard.setPosition(sf::Vector2f(20, 20));
 	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
 	dashboard.UpdateDataAsync();
@@ -112,8 +113,8 @@ int main() {
 		dashboard.UpdateGraphics(viewRect);
 
 		// We like our color-scheme, but black is purrrrty.
-		//window.clear(sf::Color(89, 217, 217));
-		window.clear(sf::Color(0, 0, 0));
+		window.clear(sf::Color(89, 217, 217));
+		//window.clear(sf::Color(0, 0, 0));
 
 #ifdef __DEBUG__
 		sf::View v(viewRect);
@@ -123,15 +124,13 @@ int main() {
 		// let's define a view
 		// Draw shit in it.
 		window.draw(dashboard);
-
-		// Show display.
-		window.display();
 #else
-
 		// Production multi-screen display (twinview primarly nvidia)
 		// let's define a view
 		sf::View leftmonitor(viewRect);
-		leftmonitor.setViewport(sf::FloatRect(0, 0, 0.5, 1));
+
+#ifdef SPLITSCREEN
+        leftmonitor.setViewport(sf::FloatRect(0, 0, 0.5, 1));
 
 		// activate it
 		window.setView(leftmonitor);
@@ -146,13 +145,16 @@ int main() {
 
 		// activate it
 		window.setView(rightmonitor);
+#else
+		window.setView(leftmonitor);
+#endif
 
 		// Draw shit in it.
 		window.draw(dashboard);
 
+#endif
 		// Show display.
 		window.display();
-#endif
 	}
 
 	// make entirely sure.
