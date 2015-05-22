@@ -5,7 +5,7 @@
  *      Author: gandalf
  */
 
-#include <objects/SmallImagePanel.hpp>
+#include <panels/SmallImagePanel.hpp>
 
 namespace objects {
 

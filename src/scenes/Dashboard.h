@@ -16,10 +16,10 @@
 #include <json11/json11.hpp>
 #include <interface/DrawablePanel.hpp>
 #include <interface/Observable.hpp>
-#include <objects/Progressbar.hpp>
-#include <objects/LargeImagePanel.hpp>
-#include <objects/SmallImagePanel.hpp>
-#include <objects/LogPanel.hpp>
+#include <panels/Progressbar.hpp>
+#include <panels/LargeImagePanel.hpp>
+#include <panels/SmallImagePanel.hpp>
+#include <panels/LogPanel.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>

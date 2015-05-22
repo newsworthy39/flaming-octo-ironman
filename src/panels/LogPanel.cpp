@@ -5,7 +5,7 @@
  *      Author: gandalf
  */
 
-#include <objects/LogPanel.hpp>
+#include <panels/LogPanel.hpp>
 
 namespace objects {
 

@@ -5,7 +5,7 @@
  *      Author: gandalf
  */
 
-#include <objects/Progressbar.hpp>
+#include <panels/Progressbar.hpp>
 
 namespace objects {
 
