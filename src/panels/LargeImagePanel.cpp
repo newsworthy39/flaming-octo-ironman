@@ -129,7 +129,11 @@ const sf::Vector2f LargeImagePanel::GetDimensions() {
 
 void LargeImagePanel::UpdateDataAsync() {
 
+	// FIXME: Currently, i use a http client inside each panel,
+	// that require maintenance. Its reusable, through a resourceFactory.
+	// this->m_resourceFactory.Download(this->m_mediapath) : [m_mediapath is full protocol:namespace:path]
     this->downloadImages();
+
 
     /**
      * finally, fix the image.

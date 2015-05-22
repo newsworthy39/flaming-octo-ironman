@@ -16,8 +16,8 @@ Progressbar::Progressbar() {
     m_tekst.setFont(m_font);
     m_tekst.setString("0");
     m_tekst.setCharacterSize(20);
-    m_tekst.setColor(sf::Color(sf::Color(0, 255, 255, 200)));
-    m_messageLoader.setFillColor(sf::Color(0, 255, 255, 240));
+    m_tekst.setColor(sf::Color(sf::Color(255, 0, 0, 240)));
+    m_messageLoader.setFillColor(sf::Color(255, 0, 0, 240));
 }
 
 Progressbar::~Progressbar() {

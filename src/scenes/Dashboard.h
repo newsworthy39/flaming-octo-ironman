@@ -42,14 +42,15 @@ public:
     void SetDimensions(sf::Vector2f dimensions);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-    void AddPanel(interface::DrawablePanel* p);
+    void AddPanelToFront(interface::DrawablePanel* p);
+    void AddPanelToBack(interface::DrawablePanel* p);
 
     // Passing solution, from interface::Observable
     void ReceiveMessage(const event::Event&, json11::Json & data);
 
 private:
     void updateClock();
-    float prevValue, newValue;
+    float prevValue, m_viewportPositionX;
     unsigned int m_paneldisplaycounter;
     std::vector<interface::DrawablePanel*> m_largepanelimages;
     //objects::AnimatedRectangle m_animatedRectangle;
