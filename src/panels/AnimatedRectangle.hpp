@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-namespace objects {
+namespace panels {
 
 class AnimatedRectangle : public sf::Drawable, public sf::Transformable {
 public:

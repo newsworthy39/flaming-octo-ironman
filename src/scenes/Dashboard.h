@@ -20,6 +20,7 @@
 #include <panels/LargeImagePanel.hpp>
 #include <panels/SmallImagePanel.hpp>
 #include <panels/LogPanel.hpp>
+#include <panels/VideoPanel.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -54,7 +55,7 @@ private:
     unsigned int m_paneldisplaycounter;
     std::vector<interface::DrawablePanel*> m_largepanelimages;
     //objects::AnimatedRectangle m_animatedRectangle;
-    objects::Progressbar m_progressbar;
+    panels::Progressbar m_progressbar;
     sf::Vector2f m_dimensions;
     sf::Clock m_wallclock;
     sf::Font m_font_h1;

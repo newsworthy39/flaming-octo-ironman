@@ -7,7 +7,7 @@
 
 #include <panels/SmallImagePanel.hpp>
 
-namespace objects {
+namespace panels {
 
 SmallImagePanel::SmallImagePanel() {
 

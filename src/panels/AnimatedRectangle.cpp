@@ -7,7 +7,7 @@
 
 #include "AnimatedRectangle.hpp"
 
-namespace objects {
+namespace panels {
 
 AnimatedRectangle::AnimatedRectangle() {
     this->shape.setFillColor(sf::Color(16, 16, 16));

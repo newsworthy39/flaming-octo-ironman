@@ -9,30 +9,10 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/scenes/subdir.mk
--include src/objects/subdir.mk
+-include src/panels/subdir.mk
 -include src/json11/subdir.mk
 -include src/event/subdir.mk
 -include src/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/window/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/voip/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/sound-capture/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/sound/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/sockets/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/shader/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/pong/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/opengl/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/ftp/subdir.mk
--include libs/SFML-2.3/share/SFML/examples/X11/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/window/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/voip/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/sound-capture/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/sound/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/sockets/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/shader/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/pong/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/opengl/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/ftp/subdir.mk
--include libs/SFML-2.2/share/SFML/examples/X11/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -68,7 +48,7 @@ all: flaming-octo-ironman
 flaming-octo-ironman: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "flaming-octo-ironman" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"/home/gandalf/workspace/flaming-octo-ironman/libs/SFML-2.3/lib" -o "flaming-octo-ironman" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -7,7 +7,7 @@
 
 #include <panels/LogPanel.hpp>
 
-namespace objects {
+namespace panels {
 
 LogPanel::LogPanel() {
 

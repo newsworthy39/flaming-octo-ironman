@@ -7,7 +7,7 @@
 
 #include <panels/LargeImagePanel.hpp>
 
-namespace objects {
+namespace panels {
 
 LargeImagePanel::LargeImagePanel() {
 

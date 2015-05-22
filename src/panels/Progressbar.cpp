@@ -7,7 +7,7 @@
 
 #include <panels/Progressbar.hpp>
 
-namespace objects {
+namespace panels {
 
 Progressbar::Progressbar() {
     m_font.loadFromFile(

@@ -16,7 +16,7 @@
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
 
-namespace objects {
+namespace panels {
 
 class LargeImagePanel: public interface::DrawablePanel {
 public:

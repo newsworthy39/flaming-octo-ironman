@@ -16,7 +16,7 @@
 
 
 
-namespace objects {
+namespace panels {
 
 class Progressbar: public interface::DrawablePanel {
 public:
