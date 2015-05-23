@@ -1,2 +1,4 @@
 /libs
-/Release/libs
+*.o
+*.a
+*/flaming-octo-ironman
