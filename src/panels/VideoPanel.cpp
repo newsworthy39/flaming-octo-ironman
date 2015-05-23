@@ -16,7 +16,6 @@ VideoPanel::VideoPanel() {
 void VideoPanel::SetMediaPath(sf::String imagePath) {
     this->m_mediaPath = imagePath;
     this->m_movie.openFromFile(this->m_mediaPath);
-
 }
 
 void VideoPanel::SetDimensions(sf::Vector2f dimensions) {
@@ -37,7 +36,7 @@ void VideoPanel::UpdateDataAsync() {
 }
 
 VideoPanel::~VideoPanel() {
-    //
+
 }
 
 void VideoPanel::UpdateGraphics(sf::FloatRect& view) {

@@ -79,9 +79,9 @@ void Dashboard::AddPanelToBack(interface::DrawablePanel * p) {
 #endif
         const interface::DrawablePanel* p1 = this->m_largepanelimages.back();
         this->m_largepanelimages.pop_back();
-        delete p1; // LargeImagePanels
+        delete p1;
 
-        //delete p1;
+
     }
 
     // Add the panel to the 'end'
@@ -280,7 +280,7 @@ void Dashboard::UpdateGraphics(sf::FloatRect& view) {
     this->updateClock();
 
     /*
-     * So we're going to cheet. If the last restart is large than
+     * So we're going to cheat. If the last restart is large than
      * 30 seconds, pick a new panel. (this simulates an animator.)
      */
     if (this->m_wallclock.getElapsedTime() >= sf::seconds(15)) {
