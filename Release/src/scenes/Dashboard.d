@@ -196,6 +196,11 @@ src/scenes/Dashboard.d: ../src/scenes/Dashboard.cpp \
  /home/gandalf/workspace/flaming-octo-ironman/src/panels/LargeImagePanel.hpp \
  /home/gandalf/workspace/flaming-octo-ironman/src/panels/SmallImagePanel.hpp \
  /home/gandalf/workspace/flaming-octo-ironman/src/panels/LogPanel.hpp \
+ /home/gandalf/workspace/flaming-octo-ironman/src/panels/VideoPanel.hpp \
+ /home/gandalf/workspace/flaming-octo-ironman/libs/sfeMovie/include/sfeMovie/Movie.hpp \
+ /home/gandalf/workspace/flaming-octo-ironman/libs/SFML-2.3/include/SFML/System.hpp \
+ /home/gandalf/workspace/flaming-octo-ironman/libs/sfeMovie/include/sfeMovie/Visibility.hpp \
+ /home/gandalf/workspace/flaming-octo-ironman/libs/sfeMovie/include/sfeMovie/StreamSelection.hpp \
  /home/gandalf/workspace/flaming-octo-ironman/libs/SFML-2.3/include/SFML/System/Clock.hpp
 
 /home/gandalf/workspace/flaming-octo-ironman/src/scenes/Dashboard.h:
@@ -591,5 +596,15 @@ src/scenes/Dashboard.d: ../src/scenes/Dashboard.cpp \
 /home/gandalf/workspace/flaming-octo-ironman/src/panels/SmallImagePanel.hpp:
 
 /home/gandalf/workspace/flaming-octo-ironman/src/panels/LogPanel.hpp:
+
+/home/gandalf/workspace/flaming-octo-ironman/src/panels/VideoPanel.hpp:
+
+/home/gandalf/workspace/flaming-octo-ironman/libs/sfeMovie/include/sfeMovie/Movie.hpp:
+
+/home/gandalf/workspace/flaming-octo-ironman/libs/SFML-2.3/include/SFML/System.hpp:
+
+/home/gandalf/workspace/flaming-octo-ironman/libs/sfeMovie/include/sfeMovie/Visibility.hpp:
+
+/home/gandalf/workspace/flaming-octo-ironman/libs/sfeMovie/include/sfeMovie/StreamSelection.hpp:
 
 /home/gandalf/workspace/flaming-octo-ironman/libs/SFML-2.3/include/SFML/System/Clock.hpp:
