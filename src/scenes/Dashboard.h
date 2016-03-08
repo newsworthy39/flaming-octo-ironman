@@ -20,7 +20,6 @@
 #include <panels/LargeImagePanel.hpp>
 #include <panels/SmallImagePanel.hpp>
 #include <panels/LogPanel.hpp>
-#include <panels/VideoPanel.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Transformable.hpp>
@@ -29,9 +28,7 @@
 
 namespace scenes {
 
-class Dashboard: public sf::Transformable,
-        public sf::Drawable,
-        public interface::Observable {
+class Dashboard: public interface::Observable, public sf::Transformable, public sf::Drawable{
 
 public:
     Dashboard(const std::string host, int port);
@@ -49,19 +46,26 @@ public:
     // Passing solution, from interface::Observable
     void ReceiveMessage(const event::Event&, json11::Json & data);
 
+protected:
+    void SetBasepath(std::string basepath);
+    virtual void onDataUpdate(const json11::Json & data);
+
 private:
+    std::string GetBasepath();
     void updateClock();
+    void _updateDataAsync(std::string & str);
     float prevValue, m_viewportPositionX;
     unsigned int m_paneldisplaycounter;
     std::vector<interface::DrawablePanel*> m_largepanelimages;
     //objects::AnimatedRectangle m_animatedRectangle;
     panels::Progressbar m_progressbar;
     sf::Vector2f m_dimensions;
-    sf::Clock m_wallclock;
-    sf::Font m_font_h1;
+     sf::Font m_font_h1;
     sf::Text m_clock;
     std::string m_host;
     int m_port;
+    sf::Clock m_wallclock;
+    std::string m_basepath;
 };
 } /* namespace objects */
 

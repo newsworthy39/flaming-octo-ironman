@@ -2,3 +2,6 @@
 *.o
 *.a
 */flaming-octo-ironman
+/Debug-sfml-trunk
+/Debug
+/Release

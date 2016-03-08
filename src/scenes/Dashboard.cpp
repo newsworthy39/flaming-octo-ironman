@@ -28,6 +28,8 @@ Dashboard::Dashboard(const std::string host, int port) {
     this->prevValue = 0.f;
     this->m_viewportPositionX = 0.f;
 
+    this->SetBasepath("dashboard");
+
     updateClock();
 }
 
@@ -81,7 +83,6 @@ void Dashboard::AddPanelToBack(interface::DrawablePanel * p) {
         this->m_largepanelimages.pop_back();
         delete p1;
 
-
     }
 
     // Add the panel to the 'end'
@@ -123,7 +124,99 @@ Dashboard::~Dashboard() {
     // TODO: Unregister stuff here.
 }
 
-void Dashboard::UpdateDataAsync() {
+void Dashboard::onDataUpdate(const json11::Json & json) {
+    // this->m_resourcefactory o; (observable and stuff, file-location etc, to conserve bandwidth and calls.)
+    // but in order to make a decision through the panel-decision-maker, it needs to be ready, before preparing
+    // the panel. Consider the following:
+    // When downloading or preparing panels, based on external content, (halting problem) it needs to start fetch
+    // meta-data, before deciding which panel to use. (see random() example-below, which uses random, to pick content)
+    // and (TODO: Fix, image download via ResourceFactory) decide, if the image is in a state, into which it can be show
+    // properly.
+
+    std::random_device rd;
+    //std::mt19937 mt(rd());
+    std::default_random_engine mt(rd());
+    std::uniform_int_distribution<> dist(0, 2);
+    int f = dist(mt);
+#ifdef __DEBUG__
+    std::cout << "Random: " << f << std::endl;
+#endif
+
+    // This is the first part of the decision-making. (should be download
+    // image, and see if viable format
+    // Use predicates?
+    if (0 == std::string().compare(json["mediapath"].string_value())) {
+#ifdef __DEBUG__
+        std::cout << "No image path" << std::endl;
+#endif
+        f = 2; // Deliberately, set textpanel if no image.
+    }
+
+    if (0
+            == std::string("/tmp/big-buck-bunny_trailer.webm").compare(
+                    json["mediapath"].string_value())) {
+        f = 3;
+    }
+
+    switch (f) {
+    case 0: {
+        panels::LargeImagePanel * p = new panels::LargeImagePanel();
+
+        // d->addResourceFactory(o)
+        p->SetMediaPath(json["mediapath"].string_value());
+        p->SetHeadline(json["headline"].string_value());
+        p->SetTeaser(json["teaser"].string_value());
+        p->SetByline(json["byline"].string_value());
+        p->SetDimensions(this->m_dimensions);
+
+        p->UpdateDataAsync();
+
+        this->AddPanelToBack(p);
+
+    }
+        ;
+        break;
+    case 1: {
+        panels::SmallImagePanel * p = new panels::SmallImagePanel();
+        p->SetMediaPath(json["mediapath"].string_value());
+        p->SetHeadline(json["headline"].string_value());
+        p->SetTeaser(json["teaser"].string_value());
+        p->SetByline(json["byline"].string_value());
+        p->SetDimensions(this->m_dimensions);
+
+        p->UpdateDataAsync();
+
+        this->AddPanelToBack(p);
+
+    }
+        ;
+        break;
+
+    case 2: {
+        panels::LogPanel * p = new panels::LogPanel();
+
+        p->SetHeadline(json["headline"].string_value());
+        p->SetTeaser(json["teaser"].string_value());
+        p->SetByline(json["byline"].string_value());
+        p->SetDimensions(this->m_dimensions);
+        this->AddPanelToBack(p);
+    }
+        ;
+        break;
+
+    }
+
+}
+
+void Dashboard::SetBasepath(std::string basepath) {
+    this->m_basepath = basepath;
+}
+
+std::string Dashboard::GetBasepath() {
+    return this->m_basepath;
+}
+
+void Dashboard::_updateDataAsync(std::string & str) {
 
     sf::Http http(this->m_host, this->m_port);
 
@@ -131,7 +224,7 @@ void Dashboard::UpdateDataAsync() {
 
     request.setMethod(sf::Http::Request::Method::Get);
 
-    request.setUri("/view/dashboard-0?type=raw");
+    request.setUri(str);
 
     request.setHttpVersion(1, 0); // HTTP 1.0
 
@@ -145,95 +238,20 @@ void Dashboard::UpdateDataAsync() {
         std::string err;
         auto json = json11::Json::parse(response.getBody(), err);
 
-        // this->m_resourcefactory o; (observable and stuff, file-location etc, to conserve bandwidth and calls.)
-        // but in order to make a decision through the panel-decision-maker, it needs to be ready, before preparing
-        // the panel. Consider the following:
-        // When downloading or preparing panels, based on external content, (halting problem) it needs to start fetch
-        // meta-data, before deciding which panel to use. (see random() example-below, which uses random, to pick content)
-        // and (TODO: Fix, image download via ResourceFactory) decide, if the image is in a state, into which it can be show
-        // properly.
-
-        std::random_device rd;
-        //std::mt19937 mt(rd());
-        std::default_random_engine mt(rd());
-        std::uniform_int_distribution<> dist(0, 2);
-        int f = dist(mt);
-
 #ifdef __DEBUG__
         std::cout << err << ", " << json.dump() << std::endl;
-        std::cout << "Random: " << f << std::endl;
 #endif
-        // This is the first part of the decision-making. (should be download
-        // image, and see if viable format
-        // Use predicates?
-        if (0 == std::string().compare(json["mediapath"].string_value())) {
-#ifdef __DEBUG__
-            std::cout << "No image path" << std::endl;
-#endif
-            f = 2; // Deliberately, set textpanel if no image.
-        }
 
-        if (0 == std::string("/tmp/big-buck-bunny_trailer.webm").compare(json["mediapath"].string_value())) {
-            f = 3;
-        }
+        this->onDataUpdate(json);
 
-        switch (f) {
-        case 0: {
-            panels::LargeImagePanel * p = new panels::LargeImagePanel();
-
-            // d->addResourceFactory(o)
-            p->SetMediaPath(json["mediapath"].string_value());
-            p->SetHeadline(json["headline"].string_value());
-            p->SetTeaser(json["teaser"].string_value());
-            p->SetByline(json["byline"].string_value());
-            p->SetDimensions(this->m_dimensions);
-
-            p->UpdateDataAsync();
-
-            this->AddPanelToBack(p);
-
-        }
-            ;
-            break;
-        case 1: {
-            panels::SmallImagePanel * p = new panels::SmallImagePanel();
-            p->SetMediaPath(json["mediapath"].string_value());
-            p->SetHeadline(json["headline"].string_value());
-            p->SetTeaser(json["teaser"].string_value());
-            p->SetByline(json["byline"].string_value());
-            p->SetDimensions(this->m_dimensions);
-
-            p->UpdateDataAsync();
-
-            this->AddPanelToBack(p);
-
-        }
-            ;
-            break;
-
-        case 2: {
-            panels::LogPanel * p = new panels::LogPanel();
-
-            p->SetHeadline(json["headline"].string_value());
-            p->SetTeaser(json["teaser"].string_value());
-            p->SetByline(json["byline"].string_value());
-            p->SetDimensions(this->m_dimensions);
-            this->AddPanelToBack(p);
-        }
-            ;
-            break;
-        case 3: {
-            panels::VideoPanel * p = new panels::VideoPanel();
-            p->SetMediaPath(json["mediapath"].string_value());
-            p->SetDimensions(this->m_dimensions);
-
-            this->AddPanelToBack(p);
-        }
-            ;
-            break;
-
-        }
     }
+}
+
+void Dashboard::UpdateDataAsync() {
+    char uri[255]; // HTTP SAYS NO MORE, FIXME: buffer-overflow!
+    std::sprintf(uri, "/view/%s-%d?type=raw", this->GetBasepath().c_str(), 0);
+    std::string t(uri);
+    this->_updateDataAsync(t);
 }
 
 /**
@@ -250,13 +268,14 @@ void Dashboard::ReceiveMessage(const event::Event& e, json11::Json & data) {
         break;
 
     case event::Event::MESSAGE: {
+
         std::string stringValue = data["message"].string_value();
 
         if (0 == stringValue.compare("update")) {
 #ifdef __DEBUG__
             std::cout << "I was asked to do a full update" << std::endl;
 #endif
-            this->UpdateDataAsync();
+            this->_updateDataAsync(stringValue);
         }
     }
         ;

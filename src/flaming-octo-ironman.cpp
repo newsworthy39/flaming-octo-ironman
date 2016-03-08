@@ -45,6 +45,7 @@
 #include <ctime>
 #include <event/JSONThreadedPoller.h>
 #include <scenes/Dashboard.h>
+#include <scenes/DataVisualization.h>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <X11/Xlib.h>
@@ -85,6 +86,7 @@ int main() {
 
 	// Objects used, here-in.
 	scenes::Dashboard dashboard("http://mjay.me", 9001);
+
 	dashboard.setPosition(sf::Vector2f(20, 20));
 	dashboard.SetDimensions(sf::Vector2f(SCREEN_W, SCREEN_H));
 	dashboard.UpdateDataAsync();
